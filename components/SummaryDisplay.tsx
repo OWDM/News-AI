@@ -58,20 +58,21 @@ export default function SummaryDisplay({
 
   return (
     <div className="w-full mb-8">
-      <div className="max-w-7xl mx-auto p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg border border-blue-100">
+      <div className="max-w-7xl mx-auto p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
             <span className="text-3xl">🇸🇦</span>
             الملخص بالعربية
           </h2>
           <button
             onClick={handleCopy}
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105"
+            className="px-5 py-2.5 rounded-lg transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105"
+            style={{ backgroundColor: 'var(--navbar-indicator)', color: '#101010' }}
           >
             {copySuccess ? '✓ تم النسخ' : 'نسخ النص'}
           </button>
         </div>
-        <div className="text-right leading-loose text-gray-800 whitespace-pre-wrap text-lg">
+        <div className="text-right leading-loose whitespace-pre-wrap text-lg" style={{ color: 'var(--foreground)' }}>
           {arabicSummary}
         </div>
       </div>
