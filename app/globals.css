@@ -1,23 +1,43 @@
+@import url('https://fonts.cdnfonts.com/css/montserrat');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==================== CSS VARIABLES ==================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Main Colors */
+  --background: #101010;
+  --foreground: #dfdfdf;
+  --sec: #a476ff;                     /* Purple accent */
+  --white: #dfdfdf;
+  --white-icon: #f3f3f398;            /* Semi-transparent white */
+  --white-icon-tr: #f3f3f310;         /* Very transparent white for borders */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Component Colors */
+  --component-bg: #1414149c;          /* Semi-transparent dark */
+  --card-bg: #1414149c;
+  --border-color: #f3f3f310;
+  --active-indicator: #A9FF5B;        /* Green indicator */
+
+  /* Navbar specific */
+  --navbar-background: #101010;
+  --navbar-component-bg: #1a1a1a;
+  --navbar-white-icon: #f3f3f398;
+  --navbar-white: #dfdfdf;
+  --navbar-indicator: #A9FF5B;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Montserrat', -apple-system, system-ui, sans-serif;
+}
+
+/* ==================== TEXT SELECTION ==================== */
+*::selection {
+  background-color: var(--sec);       /* Purple background when selecting text */
+  color: var(--background);           /* Dark text on purple background */
 }
 
 @layer utilities {
@@ -31,19 +51,17 @@ body {
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-gray-100 rounded;
+    background: var(--background);
+    border-radius: 4px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded hover:bg-gray-400;
+    background: #2a2a2a;
+    border-radius: 4px;
   }
 
-  .scrollbar-track-gray-100::-webkit-scrollbar-track {
-    @apply bg-gray-100;
-  }
-
-  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
-    @apply bg-gray-300;
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #3a3a3a;
   }
 }
 
@@ -70,4 +88,306 @@ body {
 .highlight-animate:hover {
   filter: brightness(0.9);
   transform: scale(1.01);
+}
+
+/* Navbar Styles */
+.navbar-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.navbar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background-color: var(--navbar-background);
+  border: 1px solid transparent;
+  backdrop-filter: blur(24px);
+  transition: background-color 0.3s ease, border-radius 0.3s ease, border-color 0.3s ease, width 0.5s ease;
+  bottom: 0;
+  width: 100%;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.navbar-list {
+  list-style: none;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-item {
+  flex: 1 1 0%;
+}
+
+.navbar-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--navbar-white-icon);
+  text-decoration: none;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  position: relative;
+  transition: color 0.3s ease;
+  font-family: 'Montserrat', -apple-system, system-ui, sans-serif;
+}
+
+.navbar-link:hover {
+  color: var(--navbar-white);
+}
+
+.navbar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.navbar-label {
+  font-size: 0.75rem;
+}
+
+.nav-indicator {
+  position: absolute;
+  left: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  background-color: var(--navbar-indicator);
+}
+
+/* Scrolling State */
+.navbar.scrolling {
+  background-color: var(--navbar-component-bg);
+  border-color: #ffffff10;
+  border-radius: 1rem 1rem 0 0;
+}
+
+/* Active State */
+.navbar-link.active .nav-indicator {
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+}
+
+.navbar-link.active {
+  color: white !important;
+}
+
+/* Desktop Styles (768px and above) */
+@media (min-width: 768px) {
+  .navbar {
+    top: 1.5rem;
+    bottom: auto;
+    width: 80%;
+  }
+
+  .navbar.scrolling {
+    border-radius: 9999px;
+  }
+
+  .navbar-list {
+    justify-content: center;
+    gap: 3rem;
+  }
+
+  .navbar-item {
+    flex: none;
+  }
+
+  .navbar-link {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+/* Mobile Styles (below 768px) */
+@media (max-width: 767px) {
+  .navbar {
+    width: 100% !important;
+    transform: translateX(-50%);
+    bottom: 0;
+    left: 50%;
+    position: fixed;
+    border-radius: 1rem 1rem 0 0;
+    border-color: #ffffff10;
+  }
+
+  .navbar.scrolling {
+    border-radius: 1rem 1rem 0 0;
+    background-color: var(--navbar-component-bg);
+  }
+
+  body {
+    padding-bottom: 70px;
+  }
+}
+
+/* ==================== COMPONENT STYLES ==================== */
+
+/* Standard Button/Card Component */
+.component-card,
+.component-button {
+  background-color: var(--component-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  color: var(--white-icon);
+  transition: all 0.3s ease-in-out;
+}
+
+.component-card:hover,
+.component-button:hover {
+  background-color: var(--white-icon-tr);
+  color: white;
+}
+
+/* Icon Button (square) */
+.icon-button {
+  background-color: var(--component-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  color: var(--white-icon);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  text-decoration: none;
+}
+
+.icon-button:hover {
+  background-color: var(--white-icon-tr);
+  color: white;
+}
+
+/* Full Width Button */
+.full-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2.25rem;
+  padding: 0.75rem;
+  background-color: var(--component-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  color: var(--white-icon);
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
+}
+
+.full-button:hover {
+  background-color: var(--white-icon-tr);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Input Fields */
+.input-field,
+.textarea-field {
+  padding: 0.5rem 1rem;
+  background-color: var(--component-bg);
+  color: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus,
+.textarea-field:focus {
+  outline: 2px solid var(--sec);
+  outline-offset: 2px;
+}
+
+.textarea-field {
+  resize: none;
+}
+
+/* Submit Button */
+.submit-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--white-icon-tr);
+  color: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  opacity: 1;
+  background-color: var(--white-icon-tr);
+}
+
+/* ==================== TEXT STYLES ==================== */
+
+.text-primary {
+  color: var(--white);
+}
+
+.text-secondary {
+  color: var(--white-icon);
+}
+
+.text-accent {
+  color: var(--sec);
+}
+
+/* Shiny text effect (gradient animation) */
+.shiny-text {
+  background: linear-gradient(135deg, var(--sec) 25%, #eee5ff 50%, var(--sec) 75%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+.blur-effect {
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.semi-transparent-bg {
+  background-color: var(--component-bg);
+}
+
+.subtle-border {
+  border: 1px solid var(--border-color);
 }
