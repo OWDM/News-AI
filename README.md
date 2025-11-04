@@ -4,8 +4,6 @@ AI-powered newsletter creation assistant that generates structured summaries and
 
 ## Overview
 
-This is a complete migration of the original Streamlit/Python NewsAI application to Next.js with TypeScript and LangChain.js. The application:
-
 - Extracts article content from URLs or direct text input
 - Uses RAG (Retrieval-Augmented Generation) to extract key information
 - Generates structured 4-sentence summaries using GPT-4o-mini
