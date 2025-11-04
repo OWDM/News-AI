@@ -30,30 +30,30 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
     inputMode === 'text' ? articleText.trim().length > 0 : articleUrl.trim().length > 0;
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4">
+    <div className="w-full space-y-6 p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
       {/* Mode Selection */}
-      <div className="flex gap-2 border-b border-gray-300">
+      <div className="flex gap-2 border-b-2 border-gray-200">
         <button
           onClick={() => setInputMode('text')}
-          className={`px-4 py-2 font-medium transition-colors ${
+          className={`px-6 py-3 font-semibold transition-all duration-300 ${
             inputMode === 'text'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'text-blue-600 border-b-2 border-blue-600 -mb-[2px]'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
           }`}
           disabled={isProcessing}
         >
-          Article Text
+          📝 Article Text
         </button>
         <button
           onClick={() => setInputMode('url')}
-          className={`px-4 py-2 font-medium transition-colors ${
+          className={`px-6 py-3 font-semibold transition-all duration-300 ${
             inputMode === 'url'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'text-blue-600 border-b-2 border-blue-600 -mb-[2px]'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
           }`}
           disabled={isProcessing}
         >
-          Article URL
+          🔗 Article URL
         </button>
       </div>
 
@@ -63,7 +63,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
           value={articleText}
           onChange={(e) => setArticleText(e.target.value)}
           placeholder="Paste your article text here (minimum 130 words)..."
-          className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="w-full h-64 p-5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-all duration-300 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
           disabled={isProcessing}
         />
       ) : (
@@ -72,7 +72,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
           value={articleUrl}
           onChange={(e) => setArticleUrl(e.target.value)}
           placeholder="https://example.com/article"
-          className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-5 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
           disabled={isProcessing}
         />
       )}
@@ -81,19 +81,18 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
       <button
         onClick={handleSubmit}
         disabled={!isValid || isProcessing}
-        className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${
+        className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 shadow-md ${
           isValid && !isProcessing
-            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white hover:shadow-lg transform hover:scale-[1.02]'
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         }`}
       >
-        {isProcessing ? 'Processing...' : 'Generate Summary'}
+        {isProcessing ? '⏳ Processing...' : '✨ Generate Summary'}
       </button>
 
       {/* Info Text */}
-      <p className="text-sm text-gray-600 text-center">
-        Enter an article (min 130 words) or URL to generate a structured summary with Arabic
-        translation
+      <p className="text-sm text-gray-600 text-center leading-relaxed">
+        Enter an article (min 130 words) or URL to generate a structured 4-sentence summary with Arabic translation
       </p>
     </div>
   );

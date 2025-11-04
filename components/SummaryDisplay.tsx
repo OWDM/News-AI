@@ -1,7 +1,7 @@
 'use client';
 
 import { SentenceMatch } from '@/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface SummaryDisplayProps {
   summary: string;
@@ -49,7 +49,7 @@ export default function SummaryDisplay({
     matches.forEach((match, index) => {
       const sentence = match.summary_sentence;
       const color = colors[index];
-      const highlighted = `<span style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${sentence}</span>`;
+      const highlighted = `<span class="highlight-animate" style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${sentence}</span>`;
       highlightedText = highlightedText.replace(sentence, highlighted);
     });
 
@@ -57,30 +57,23 @@ export default function SummaryDisplay({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
-      {/* Arabic Summary */}
-      <div className="p-6 bg-white rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Arabic Summary</h2>
+    <div className="w-full mb-8">
+      <div className="max-w-7xl mx-auto p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg border border-blue-100">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <span className="text-3xl">🇸🇦</span>
+            الملخص بالعربية
+          </h2>
           <button
             onClick={handleCopy}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105"
           >
-            {copySuccess ? 'Copied!' : 'Copy to Clipboard'}
+            {copySuccess ? '✓ تم النسخ' : 'نسخ النص'}
           </button>
         </div>
-        <div className="text-right leading-relaxed text-gray-800 whitespace-pre-wrap">
+        <div className="text-right leading-loose text-gray-800 whitespace-pre-wrap text-lg">
           {arabicSummary}
         </div>
-      </div>
-
-      {/* English Summary */}
-      <div className="p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">English Summary</h2>
-        <div
-          className="leading-relaxed text-gray-800 whitespace-pre-wrap"
-          dangerouslySetInnerHTML={{ __html: highlightSummary() }}
-        />
       </div>
     </div>
   );

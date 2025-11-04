@@ -24,4 +24,50 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Custom scrollbar styles */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded hover:bg-gray-400;
+  }
+
+  .scrollbar-track-gray-100::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    @apply bg-gray-300;
+  }
+}
+
+/* Highlight Animation */
+@keyframes highlight-fade-in {
+  0% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.highlight-animate {
+  animation: highlight-fade-in 0.6s ease-out;
+  transition: all 0.3s ease;
+  display: inline;
+}
+
+.highlight-animate:hover {
+  filter: brightness(0.9);
+  transform: scale(1.01);
 }
