@@ -51,13 +51,14 @@ export default function ArticleDisplay({
   };
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
-      <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+    <div className="p-6 rounded-xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+      <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
         <span className="text-2xl">📄</span>
         Original Article
       </h2>
       <div
-        className="leading-relaxed text-gray-800 whitespace-pre-wrap max-h-[600px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        className="leading-relaxed whitespace-pre-wrap max-h-[600px] overflow-y-auto pr-4 scrollbar-thin"
+        style={{ color: 'var(--foreground)' }}
         dangerouslySetInnerHTML={{ __html: highlightArticle() }}
       />
     </div>

@@ -201,19 +201,22 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-12 shadow-lg">
-        <div className="max-w-7xl mx-auto px-8">
-          <h1 className="text-5xl font-bold mb-3 tracking-tight">NewsAI</h1>
-          <p className="text-xl text-blue-100">
-            AI-Powered Newsletter Assistant - Generate Summaries & Arabic Translations
-          </p>
-        </div>
-      </header>
+      <section id="home">
+        <header className="py-12" style={{ backgroundColor: 'var(--component-bg)', borderBottom: '1px solid var(--border-color)' }}>
+          <div className="max-w-7xl mx-auto px-8">
+            <h1 className="text-5xl font-bold mb-3 tracking-tight" style={{ color: 'var(--foreground)' }}>NewsAI</h1>
+            <p className="text-xl" style={{ color: 'var(--navbar-white-icon)' }}>
+              AI-Powered Newsletter Assistant - Generate Summaries & Arabic Translations
+            </p>
+          </div>
+        </header>
+      </section>
 
       {/* Main Content */}
-      <main className="px-8 py-12">
+      <section id="projects">
+        <main className="px-8 py-12">
         {/* Input Section */}
         {!processingComplete && (
           <div className="max-w-4xl mx-auto mb-12">
@@ -230,7 +233,7 @@ export default function Home() {
 
         {/* Error Message */}
         {state.error && (
-          <div className="max-w-4xl mx-auto mb-12 p-6 bg-red-50 border-2 border-red-300 text-red-800 rounded-xl shadow-md">
+          <div className="max-w-4xl mx-auto mb-12 p-6 rounded-xl shadow-md" style={{ backgroundColor: 'var(--card-bg)', border: '2px solid #ff4444', color: '#ff6666' }}>
             <p className="font-bold text-lg mb-2">Error:</p>
             <p>{state.error}</p>
           </div>
@@ -240,7 +243,7 @@ export default function Home() {
         {processingComplete && state.summary && (
           <>
             {/* Controls Bar */}
-            <div className="max-w-7xl mx-auto mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+            <div className="max-w-7xl mx-auto mb-8 p-6 rounded-xl shadow-md" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <ToggleSwitch
                   enabled={showHighlighting}
@@ -264,7 +267,8 @@ export default function Home() {
                       matchedSentences: [],
                     });
                   }}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
+                  className="px-6 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
+                  style={{ backgroundColor: 'var(--navbar-indicator)', color: '#101010' }}
                 >
                   ✨ Process New Article
                 </button>
@@ -292,13 +296,14 @@ export default function Home() {
 
               {/* Right Column - English Summary (sticky, shown inline by SummaryDisplay component) */}
               <div className="lg:block hidden">
-                <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200 sticky top-4">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <div className="p-6 rounded-xl shadow-lg sticky top-4" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+                  <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
                     <span className="text-2xl">📝</span>
                     English Summary
                   </h2>
                   <div
-                    className="leading-relaxed text-gray-800 whitespace-pre-wrap"
+                    className="leading-relaxed whitespace-pre-wrap"
+                    style={{ color: 'var(--foreground)' }}
                     dangerouslySetInnerHTML={{
                       __html: (() => {
                         if (!showHighlighting || !state.matchedSentences || state.matchedSentences.length === 0) {
@@ -329,10 +334,13 @@ export default function Home() {
             </div>
           </>
         )}
-      </main>
+        </main>
+      </section>
 
       {/* Footer */}
-      <Footer />
+      <section id="contact">
+        <Footer />
+      </section>
     </div>
   );
 }
