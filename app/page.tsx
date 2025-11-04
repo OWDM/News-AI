@@ -5,6 +5,8 @@ import ArticleInput from '@/components/ArticleInput';
 import ProcessingProgress from '@/components/ProcessingProgress';
 import SummaryDisplay from '@/components/SummaryDisplay';
 import ArticleDisplay from '@/components/ArticleDisplay';
+import ToggleSwitch from '@/components/ToggleSwitch';
+import Footer from '@/components/Footer';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
 
 export default function Home() {
@@ -199,31 +201,37 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Header */}
-      <header className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">NewsAI</h1>
-        <p className="text-lg text-gray-600">
-          AI-Powered Newsletter Assistant - Generate Summaries & Arabic Translations
-        </p>
+      <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-12 shadow-lg">
+        <div className="max-w-7xl mx-auto px-8">
+          <h1 className="text-5xl font-bold mb-3 tracking-tight">NewsAI</h1>
+          <p className="text-xl text-blue-100">
+            AI-Powered Newsletter Assistant - Generate Summaries & Arabic Translations
+          </p>
+        </div>
       </header>
 
       {/* Main Content */}
-      <main className="space-y-8">
+      <main className="px-8 py-12">
         {/* Input Section */}
         {!processingComplete && (
-          <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
+          <div className="max-w-4xl mx-auto mb-12">
+            <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
+          </div>
         )}
 
         {/* Processing Progress */}
         {state.isProcessing && (
-          <ProcessingProgress currentPhase={state.currentPhase} progress={state.progress} />
+          <div className="max-w-4xl mx-auto mb-12">
+            <ProcessingProgress currentPhase={state.currentPhase} progress={state.progress} />
+          </div>
         )}
 
         {/* Error Message */}
         {state.error && (
-          <div className="w-full max-w-4xl mx-auto p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            <p className="font-medium">Error:</p>
+          <div className="max-w-4xl mx-auto mb-12 p-6 bg-red-50 border-2 border-red-300 text-red-800 rounded-xl shadow-md">
+            <p className="font-bold text-lg mb-2">Error:</p>
             <p>{state.error}</p>
           </div>
         )}
@@ -231,38 +239,39 @@ export default function Home() {
         {/* Results Section */}
         {processingComplete && state.summary && (
           <>
-            {/* Controls */}
-            <div className="w-full max-w-4xl mx-auto flex justify-between items-center">
-              <button
-                onClick={() => setShowHighlighting(!showHighlighting)}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
-              >
-                {showHighlighting ? 'Hide Highlighting' : 'Show Highlighting'}
-              </button>
+            {/* Controls Bar */}
+            <div className="max-w-7xl mx-auto mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <ToggleSwitch
+                  enabled={showHighlighting}
+                  onToggle={() => setShowHighlighting(!showHighlighting)}
+                  label="Show Highlighting"
+                />
 
-              <button
-                onClick={() => {
-                  setProcessingComplete(false);
-                  setState({
-                    isProcessing: false,
-                    currentPhase: '',
-                    progress: 0,
-                    error: null,
-                    article: '',
-                    summary: '',
-                    arabicSummary: '',
-                    highlightedArticle: '',
-                    highlightedSummary: '',
-                    matchedSentences: [],
-                  });
-                }}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-              >
-                Process New Article
-              </button>
+                <button
+                  onClick={() => {
+                    setProcessingComplete(false);
+                    setState({
+                      isProcessing: false,
+                      currentPhase: '',
+                      progress: 0,
+                      error: null,
+                      article: '',
+                      summary: '',
+                      arabicSummary: '',
+                      highlightedArticle: '',
+                      highlightedSummary: '',
+                      matchedSentences: [],
+                    });
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
+                >
+                  ✨ Process New Article
+                </button>
+              </div>
             </div>
 
-            {/* Summary Display */}
+            {/* Arabic Summary - Full Width */}
             <SummaryDisplay
               summary={state.summary}
               arabicSummary={state.arabicSummary}
@@ -270,21 +279,60 @@ export default function Home() {
               showHighlighting={showHighlighting}
             />
 
-            {/* Article Display */}
-            <ArticleDisplay
-              article={state.article}
-              matches={state.matchedSentences}
-              showHighlighting={showHighlighting}
-            />
+            {/* Two Column Layout: Article (left) + English Summary (right sticky) */}
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left Column - Original Article (scrollable) */}
+              <div>
+                <ArticleDisplay
+                  article={state.article}
+                  matches={state.matchedSentences}
+                  showHighlighting={showHighlighting}
+                />
+              </div>
+
+              {/* Right Column - English Summary (sticky, shown inline by SummaryDisplay component) */}
+              <div className="lg:block hidden">
+                <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200 sticky top-4">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span className="text-2xl">📝</span>
+                    English Summary
+                  </h2>
+                  <div
+                    className="leading-relaxed text-gray-800 whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{
+                      __html: (() => {
+                        if (!showHighlighting || !state.matchedSentences || state.matchedSentences.length === 0) {
+                          return state.summary;
+                        }
+                        const generateColors = (count: number): string[] => {
+                          const colors: string[] = [];
+                          for (let i = 0; i < count; i++) {
+                            const hue = (i * 360) / count;
+                            colors.push(`hsl(${hue}, 70%, 80%)`);
+                          }
+                          return colors;
+                        };
+                        const colors = generateColors(state.matchedSentences.length);
+                        let highlightedText = state.summary;
+                        state.matchedSentences.forEach((match, index) => {
+                          const sentence = match.summary_sentence;
+                          const color = colors[index];
+                          const highlighted = `<span class="highlight-animate" style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${sentence}</span>`;
+                          highlightedText = highlightedText.replace(sentence, highlighted);
+                        });
+                        return highlightedText;
+                      })(),
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="text-center mt-16 text-gray-500 text-sm">
-        <p>Built with Next.js, TypeScript, and LangChain.js</p>
-        <p className="mt-1">Deployed on Vercel</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

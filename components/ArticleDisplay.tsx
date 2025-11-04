@@ -43,7 +43,7 @@ export default function ArticleDisplay({
 
     // Highlight all matching sentences
     Object.entries(sentenceColorMap).forEach(([sentence, color]) => {
-      const highlighted = `<span style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${sentence}</span>`;
+      const highlighted = `<span class="highlight-animate" style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${sentence}</span>`;
       highlightedText = highlightedText.replace(sentence, highlighted);
     });
 
@@ -51,14 +51,15 @@ export default function ArticleDisplay({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Original Article</h2>
-        <div
-          className="leading-relaxed text-gray-800 whitespace-pre-wrap"
-          dangerouslySetInnerHTML={{ __html: highlightArticle() }}
-        />
-      </div>
+    <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+      <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <span className="text-2xl">📄</span>
+        Original Article
+      </h2>
+      <div
+        className="leading-relaxed text-gray-800 whitespace-pre-wrap max-h-[600px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        dangerouslySetInnerHTML={{ __html: highlightArticle() }}
+      />
     </div>
   );
 }
