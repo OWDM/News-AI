@@ -86,9 +86,9 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
   const isValid = input.trim().length > 0 && !validationError;
 
   return (
-    <div className="w-full p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+    <div className="w-full p-8 rounded-lg shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
       {/* Input Area with Shine Border */}
-      <div className="relative rounded-xl p-[2px]">
+      <div className="relative rounded-md p-[2px]">
         {/* Shine Border Effect */}
         <div
           className="shine-border animate-shine"
@@ -100,14 +100,14 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
         />
 
         {/* Inner container - fills the space created by padding */}
-        <div className="relative rounded-[10px] bg-[var(--background)]">
+        <div className="relative rounded-[6px] bg-[var(--background)]">
           <textarea
             ref={textareaRef}
             value={input}
             onChange={(e) => handleInputChange(e.target.value)}
             placeholder={placeholders[placeholderIndex]}
             rows={1}
-            className="w-full p-5 bg-transparent rounded-[10px] border-0 focus:outline-none focus:ring-0 focus:border-0 resize-none placeholder-fade scrollbar-thin transition-all duration-300"
+            className="w-full p-5 bg-transparent rounded-[6px] border-0 focus:outline-none focus:ring-0 focus:border-0 focus:bg-transparent active:bg-transparent resize-none placeholder-fade scrollbar-thin transition-none"
             style={{
               color: 'var(--foreground)',
               minHeight: '56px',
@@ -116,6 +116,10 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
               paddingRight: isValid || isProcessing ? '60px' : '20px',
               paddingBottom: '20px',
               boxShadow: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              backgroundColor: 'transparent',
+              outline: 'none',
+              outlineOffset: '0',
             }}
             disabled={isProcessing}
           />
