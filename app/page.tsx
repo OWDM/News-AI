@@ -23,8 +23,9 @@ export default function Home() {
     matchedSentences: [],
   });
 
-  const [showHighlighting, setShowHighlighting] = useState(true);
+  const [showHighlighting, setShowHighlighting] = useState(false);
   const [processingComplete, setProcessingComplete] = useState(false);
+  const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
 
   const handleSubmit = async (content: string, isUrl: boolean) => {
     try {
@@ -42,6 +43,7 @@ export default function Home() {
         matchedSentences: [],
       });
       setProcessingComplete(false);
+      setHasShownHighlighting(false); // Reset for new article
 
       let articleText = content;
 
@@ -52,6 +54,10 @@ export default function Home() {
           currentPhase: 'Extracting article from URL...',
           progress: 5,
         }));
+
+        // Smooth progress increments
+        await new Promise(resolve => setTimeout(resolve, 300));
+        setState((prev) => ({ ...prev, progress: 8 }));
 
         const response = await fetch('/api/extract-content', {
           method: 'POST',
@@ -72,8 +78,11 @@ export default function Home() {
         ...prev,
         article: articleText,
         currentPhase: 'Article loaded',
-        progress: 10,
+        progress: 12,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 15 }));
 
       // Step 2: Extract key information (RAG with 3 parallel QA)
       setState((prev) => ({
@@ -81,6 +90,9 @@ export default function Home() {
         currentPhase: 'Extracting key information...',
         progress: 20,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 400));
+      setState((prev) => ({ ...prev, progress: 25 }));
 
       const keyInfoResponse = await fetch('/api/extract-key-info', {
         method: 'POST',
@@ -99,15 +111,21 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         currentPhase: 'Key information extracted',
-        progress: 40,
+        progress: 38,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setState((prev) => ({ ...prev, progress: 42 }));
 
       // Step 3: Generate summary
       setState((prev) => ({
         ...prev,
         currentPhase: 'Generating summary...',
-        progress: 50,
+        progress: 48,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 400));
+      setState((prev) => ({ ...prev, progress: 52 }));
 
       const summaryResponse = await fetch('/api/generate-summary', {
         method: 'POST',
@@ -127,8 +145,11 @@ export default function Home() {
         ...prev,
         summary,
         currentPhase: 'Summary generated',
-        progress: 65,
+        progress: 62,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setState((prev) => ({ ...prev, progress: 66 }));
 
       // Step 4: Translate to Arabic
       setState((prev) => ({
@@ -136,6 +157,9 @@ export default function Home() {
         currentPhase: 'Translating to Arabic...',
         progress: 70,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 400));
+      setState((prev) => ({ ...prev, progress: 74 }));
 
       const arabicResponse = await fetch('/api/translate-arabic', {
         method: 'POST',
@@ -155,8 +179,11 @@ export default function Home() {
         ...prev,
         arabicSummary,
         currentPhase: 'Translation complete',
-        progress: 85,
+        progress: 82,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setState((prev) => ({ ...prev, progress: 86 }));
 
       // Step 5: Match sentences for highlighting
       setState((prev) => ({
@@ -164,6 +191,9 @@ export default function Home() {
         currentPhase: 'Matching sentences for highlighting...',
         progress: 90,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setState((prev) => ({ ...prev, progress: 94 }));
 
       const matchResponse = await fetch('/api/match-sentences', {
         method: 'POST',
@@ -228,21 +258,21 @@ export default function Home() {
         <main className="px-8 py-16">
         {/* Input Section */}
         {!processingComplete && (
-          <div className="max-w-4xl mx-auto mb-12">
+          <div className="max-w-4xl mx-auto mb-12 animate-fadeInUp">
             <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
           </div>
         )}
 
         {/* Processing Progress */}
         {state.isProcessing && (
-          <div className="max-w-4xl mx-auto mb-12">
+          <div className="max-w-4xl mx-auto mb-12 animate-scaleIn">
             <ProcessingProgress currentPhase={state.currentPhase} progress={state.progress} />
           </div>
         )}
 
         {/* Error Message */}
         {state.error && (
-          <div className="max-w-4xl mx-auto mb-12 p-6 rounded-xl shadow-md" style={{ backgroundColor: 'var(--card-bg)', border: '2px solid #ff4444', color: '#ff6666' }}>
+          <div className="max-w-4xl mx-auto mb-12 p-6 rounded-xl shadow-md animate-slideInDown" style={{ backgroundColor: 'var(--card-bg)', border: '2px solid #ff4444', color: '#ff6666' }}>
             <p className="font-bold text-lg mb-2">Error:</p>
             <p>{state.error}</p>
           </div>
@@ -252,7 +282,7 @@ export default function Home() {
         {processingComplete && state.summary && (
           <>
             {/* New Article Button */}
-            <div className="max-w-7xl mx-auto mb-8 text-center">
+            <div className="max-w-7xl mx-auto mb-8 text-center animate-fadeIn">
               <button
                 onClick={() => {
                   setProcessingComplete(false);
@@ -269,72 +299,100 @@ export default function Home() {
                     matchedSentences: [],
                   });
                 }}
-                className="px-8 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
+                className="px-10 py-4 rounded-xl smooth-transition shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-base"
                 style={{ backgroundColor: 'var(--navbar-indicator)', color: '#101010' }}
               >
-                ✨ Process New Article
+                Process New Article
               </button>
             </div>
 
             {/* Arabic Summary - Full Width */}
-            <SummaryDisplay
-              summary={state.summary}
-              arabicSummary={state.arabicSummary}
-              matches={state.matchedSentences}
-              showHighlighting={showHighlighting}
-            />
+            <div className="animate-fadeInUp">
+              <SummaryDisplay
+                summary={state.summary}
+                arabicSummary={state.arabicSummary}
+                matches={state.matchedSentences}
+                showHighlighting={showHighlighting}
+                isFirstTime={!hasShownHighlighting && showHighlighting}
+              />
+            </div>
 
             {/* Highlight Toggle */}
-            <div className="max-w-7xl mx-auto mb-8 flex justify-center">
+            <div className="max-w-7xl mx-auto mb-8 flex justify-center animate-fadeIn animate-delay-100">
               <ToggleSwitch
                 enabled={showHighlighting}
-                onToggle={() => setShowHighlighting(!showHighlighting)}
+                onToggle={() => {
+                  if (!showHighlighting && !hasShownHighlighting) {
+                    setHasShownHighlighting(true);
+                  }
+                  setShowHighlighting(!showHighlighting);
+                }}
                 label="Show Highlighting"
               />
             </div>
 
             {/* Two Column Layout: Article (left) + English Summary (right sticky) */}
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fadeInUp animate-delay-200">
               {/* Left Column - Original Article (scrollable) */}
               <div>
                 <ArticleDisplay
                   article={state.article}
                   matches={state.matchedSentences}
                   showHighlighting={showHighlighting}
+                  isFirstTime={!hasShownHighlighting && showHighlighting}
                 />
               </div>
 
               {/* Right Column - English Summary (sticky, shown inline by SummaryDisplay component) */}
               <div className="lg:block hidden">
-                <div className="p-6 rounded-xl shadow-lg sticky top-4" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-                  <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
-                    <span className="text-2xl">📝</span>
+                <div className="p-8 rounded-2xl shadow-lg sticky top-4 smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider mb-6 pb-4" style={{
+                    color: 'var(--navbar-white-icon)',
+                    opacity: 0.7,
+                    borderBottom: '2px solid var(--border-color)'
+                  }}>
                     English Summary
                   </h2>
                   <div
                     className="leading-relaxed whitespace-pre-wrap"
-                    style={{ color: 'var(--foreground)' }}
+                    style={{ color: 'var(--foreground)', lineHeight: '1.8' }}
                     dangerouslySetInnerHTML={{
                       __html: (() => {
-                        if (!showHighlighting || !state.matchedSentences || state.matchedSentences.length === 0) {
-                          return state.summary;
-                        }
-                        const generateColors = (count: number): string[] => {
-                          const colors: string[] = [];
-                          for (let i = 0; i < count; i++) {
-                            const hue = (i * 360) / count;
-                            colors.push(`hsl(${hue}, 65%, 40%)`);
-                          }
-                          return colors;
-                        };
-                        const colors = generateColors(state.matchedSentences.length);
                         let highlightedText = state.summary;
-                        state.matchedSentences.forEach((match, index) => {
-                          const sentence = match.summary_sentence;
-                          const color = colors[index];
-                          const highlighted = `<span class="highlight-animate" style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${sentence}</span>`;
-                          highlightedText = highlightedText.replace(sentence, highlighted);
-                        });
+
+                        if (showHighlighting && state.matchedSentences && state.matchedSentences.length > 0) {
+                          const generateColors = (count: number): string[] => {
+                            const colors: string[] = [];
+                            for (let i = 0; i < count; i++) {
+                              const hue = (i * 360) / count;
+                              colors.push(`hsl(${hue}, 65%, 40%)`);
+                            }
+                            return colors;
+                          };
+                          const colors = generateColors(state.matchedSentences.length);
+
+                          const isFirstTime = !hasShownHighlighting && showHighlighting;
+                          state.matchedSentences.forEach((match, index) => {
+                            const sentence = match.summary_sentence;
+                            const color = colors[index];
+                            const animationDelay = index * 0.8; // 800ms delay between each highlight
+                            const animationClass = isFirstTime ? 'highlight-animate-first-time' : 'highlight-animate';
+                            const style = isFirstTime
+                              ? `background-image: linear-gradient(to right, ${color}, ${color}); animation-delay: ${animationDelay}s;`
+                              : `background-color: ${color}; padding: 2px 4px; border-radius: 3px;`;
+                            const highlighted = `<span class="${animationClass}" style="${style}">${sentence}</span>`;
+                            highlightedText = highlightedText.replace(sentence, highlighted);
+                          });
+                        }
+
+                        // Make first line (title) larger
+                        const lines = highlightedText.split('\n').filter(line => line.trim());
+                        if (lines.length > 0) {
+                          const title = lines[0];
+                          const rest = lines.slice(1).join('\n');
+                          return `<div class="text-3xl font-bold mb-6" style="line-height: 1.4;">${title}</div><div class="text-base">${rest}</div>`;
+                        }
+
                         return highlightedText;
                       })(),
                     }}
