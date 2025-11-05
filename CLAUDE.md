@@ -61,11 +61,28 @@ The main application (`app/page.tsx`) orchestrates a 5-step pipeline:
   - Validates single URL limit (prevents multiple URLs)
   - Auto-grows from 1 line to 10 lines max (280px)
   - Rotating placeholder examples with 3D flip animation
-  - Inline submit button (up arrow) appears when input is valid
+  - Inline submit button (green up arrow) appears in bottom-right when valid input detected
   - Custom scrollbar for content exceeding 10 lines
-- `ProcessingProgress.tsx` - Real-time progress indicator (0-100%)
-- `SummaryDisplay.tsx` - English + Arabic summaries with highlighting toggle
+  - No processing spinner - clean minimal design
+- `ProcessingProgress.tsx` - Claude-style progress indicator
+  - Dynamic status messages that change based on progress percentage
+  - Shimmer gradient progress bar (green to purple)
+  - Smooth transitions with percentage display
+  - Minimal design without phase indicator boxes
+- `SummaryDisplay.tsx` - Arabic summary display with copy functionality
+  - Large title formatting (first line as text-3xl)
+  - Icon-only copy button with 1-second success animation
+  - Small uppercase section heading
+  - RTL text alignment for Arabic content
 - `ArticleDisplay.tsx` - Original article with synchronized highlighting
+  - Large title formatting (first line as text-3xl)
+  - Small uppercase section heading
+  - Supports highlight animation on first toggle
+- `ToggleSwitch.tsx` - Modern toggle for highlighting control
+  - Card-style background with border
+  - ON/OFF text labels
+  - Smooth transition animations
+  - Default state: OFF
 - `Navbar.tsx` - Animated navbar with scroll-responsive width and active section indicators
 - `Contact.tsx` - Contact form with dark theme autofill styling
 - `Footer.tsx` - Minimalist footer with logo and branding
@@ -90,13 +107,45 @@ Uses React `useState` for client-side state in `app/page.tsx` - no external stat
 - Sentence matches for highlighting
 - Error state
 
+Additional state variables:
+- `showHighlighting` - Boolean controlling highlight visibility (default: false)
+- `processingComplete` - Boolean controlling results display
+- `hasShownHighlighting` - Boolean tracking if animation has been shown (for first-time animation)
+
 ## UI/UX Features
 
 ### Design System
 - **Dark theme** with CSS custom properties in `globals.css`
 - **Color palette**: Dark backgrounds (#101010), purple accent (#a476ff), green indicator (#A9FF5B)
 - **Typography**: Montserrat for body, Bungee for branding/logo
+- **No emojis**: Clean professional design without emoji decorations
 - Custom scrollbar styling for better dark mode aesthetics
+
+### Animation Framework
+Comprehensive animation system in `globals.css`:
+- **Keyframe animations**: fadeIn, fadeInUp, slideInDown, slideInUp, scaleIn
+- **Utility classes**: animate-fadeIn, animate-fadeInUp, animate-slideInDown, animate-slideInUp, animate-scaleIn
+- **Delayed animations**: animate-delay-100, animate-delay-200, animate-delay-300
+- **Smooth transitions**: smooth-transition (0.3s), smooth-transition-slow (0.5s)
+- **Easing functions**: cubic-bezier(0.4, 0, 0.2, 1) for natural motion
+- **Smooth scroll**: Applied to html element for anchor navigation
+
+### Progress Loading
+- **Smooth incremental updates**: Progress moves gradually with intermediate steps
+- **Artificial delays**: 200-400ms delays between progress updates for perceived smoothness
+- **Dynamic messages**: Status messages change based on progress percentage
+  - < 20%: "Pondering, stand by..."
+  - 20-40%: "Extracting key information..."
+  - 40-60%: "Analyzing article structure..."
+  - 60-80%: "Generating summary..."
+  - 80-95%: "Almost there..."
+  - 95-100%: "Finishing up..."
+
+### Typography Hierarchy
+- **Section headings**: Very small (text-xs uppercase) with reduced opacity for "ARABIC SUMMARY", "ENGLISH SUMMARY", "ORIGINAL ARTICLE"
+- **Content titles**: Large (text-3xl font-bold) for first line of article/summary content
+- **Smart detection**: First line automatically detected and styled as title
+- **Body text**: Standard sizes with proper line-height for readability
 
 ### Input Component Features
 - **Smart input detection**: Single textarea automatically determines if input is URL or article text
@@ -104,6 +153,14 @@ Uses React `useState` for client-side state in `app/page.tsx` - no external stat
 - **Rotating placeholders**: 4 example inputs rotate every 4 seconds with 3D flip animation
 - **Inline submission**: Green arrow button appears in bottom-right when valid input detected
 - **Validation feedback**: Red border and error message for multiple URLs
+- **No processing indicator**: Clean design without spinning indicators
+
+### Highlighting Features
+- **Toggle control**: Modern toggle switch with ON/OFF labels, default state OFF
+- **First-time animation**: Intended to show sweeping animation on first toggle (currently under development)
+- **Color-coded matching**: Different colors for each summary sentence and its matched article sentences
+- **Staggered reveal**: 800ms delay between each color group
+- **Synchronized highlighting**: Same colors appear in both summary and original article
 
 ### Navbar Behavior
 - **Scroll-responsive**: Width animates from 80% to compact size on scroll (desktop only)
@@ -120,6 +177,7 @@ Uses React `useState` for client-side state in `app/page.tsx` - no external stat
 - **Full viewport sections**: Each section uses `min-h-screen` for natural scroll stops
 - **Responsive spacing**: Top padding on generator section prevents navbar overlap
 - **Smooth scrolling**: Anchor links use smooth scroll behavior for better UX
+- **Staggered entrance**: Results sections appear with staggered delays for polished feel
 
 ## Key Technical Details
 

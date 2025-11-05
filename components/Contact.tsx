@@ -28,19 +28,19 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Text */}
           <div>
-            <p className="text-sm font-medium mb-3" style={{ color: 'var(--navbar-indicator)' }}>
+            <p className="text-sm font-medium mb-3 animate-contact-label" style={{ color: 'var(--navbar-indicator)' }}>
               [Contact]
             </p>
-            <h2 className="text-5xl font-bold mb-4" style={{ color: 'var(--foreground)' }}>
+            <h2 className="text-5xl font-bold mb-4 animate-contact-heading" style={{ color: 'var(--foreground)' }}>
               Drop Me a Message
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
-              Have questions or feedback? I'd love to hear from you. Fill out the form and I'll get back to you as soon as possible.
+            <p className="text-sm leading-relaxed animate-contact-description" style={{ color: 'var(--navbar-white-icon)' }}>
+              Have questions or feedback? I&apos;d love to hear from you. Fill out the form and I&apos;ll get back to you as soon as possible.
             </p>
           </div>
 
           {/* Right Side - Form */}
-          <div className="p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+          <div className="p-8 rounded-2xl shadow-lg animate-contact-form" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Input */}
               <div>
@@ -111,13 +111,53 @@ export default function Contact() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02]"
+                className="group w-full rounded-full pl-6 pr-1 py-1 flex items-center justify-between overflow-hidden relative"
                 style={{
                   backgroundColor: 'var(--navbar-indicator)',
-                  color: '#101010',
+                  transition: 'all 0.3s ease',
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--sec)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--navbar-indicator)'}
               >
-                Send Message
+                {/* Button text */}
+                <span className="text-base font-medium text-[#101010] transition-colors duration-300">
+                  Send Message
+                </span>
+
+                {/* White circle with animated arrow */}
+                <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 relative ml-4">
+                  {/* First arrow - moves up-right and fades out on hover */}
+                  <svg
+                    className="w-4 h-4 transition-all duration-200 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:opacity-0"
+                    style={{ color: '#101010' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17L17 7M17 7H7M17 7v10"
+                    />
+                  </svg>
+
+                  {/* Second arrow - positioned bottom-left, moves to center and fades in on hover */}
+                  <svg
+                    className="w-4 h-4 absolute transition-all duration-200 -translate-x-2 translate-y-2 opacity-0 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100"
+                    style={{ color: 'var(--sec)' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17L17 7M17 7H7M17 7v10"
+                    />
+                  </svg>
+                </div>
               </button>
             </form>
           </div>
