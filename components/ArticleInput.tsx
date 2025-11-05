@@ -86,9 +86,9 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
   const isValid = input.trim().length > 0 && !validationError;
 
   return (
-    <div className="w-full p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+    <div className="w-full p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
       {/* Input Area */}
-      <div className="relative border-2 rounded-xl" style={{
+      <div className="relative border-2 rounded-xl smooth-transition" style={{
         borderColor: validationError ? '#ff4444' : 'var(--border-color)',
         backgroundColor: 'var(--background)',
       }}>
@@ -116,7 +116,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
         {isValid && !isProcessing && (
           <button
             onClick={handleSubmit}
-            className="absolute bottom-4 right-4 p-2.5 rounded-lg transition-all duration-300 hover:scale-110 z-10"
+            className="absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition hover:scale-110 z-10 animate-scaleIn"
             style={{
               backgroundColor: 'var(--navbar-indicator)',
               color: '#101010',
@@ -128,21 +128,11 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
             </svg>
           </button>
         )}
-
-        {/* Processing Indicator */}
-        {isProcessing && (
-          <div className="absolute bottom-4 right-4 p-2.5 z-10">
-            <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ color: 'var(--navbar-indicator)' }}>
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          </div>
-        )}
       </div>
 
       {/* Validation Error */}
       {validationError && (
-        <p className="text-sm px-2 mt-2" style={{ color: '#ff6666' }}>
+        <p className="text-sm px-2 mt-2 animate-slideInDown" style={{ color: '#ff6666' }}>
           ⚠️ {validationError}
         </p>
       )}

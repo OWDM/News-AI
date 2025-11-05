@@ -6,61 +6,49 @@ interface ProcessingProgressProps {
 }
 
 export default function ProcessingProgress({ currentPhase, progress }: ProcessingProgressProps) {
+  // Dynamic status messages based on progress
+  const getStatusMessage = () => {
+    if (progress < 20) return 'Pondering, stand by...';
+    if (progress < 40) return 'Extracting key information...';
+    if (progress < 60) return 'Analyzing article structure...';
+    if (progress < 80) return 'Generating summary...';
+    if (progress < 95) return 'Almost there...';
+    return 'Finishing up...';
+  };
+
   return (
-    <div className="w-full space-y-6 p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-      <div className="space-y-3">
-        <div className="flex justify-between items-center">
-          <span className="text-base font-semibold flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
-            <span className="inline-block animate-spin">⚙️</span>
-            {currentPhase}
-          </span>
-          <span className="text-lg font-bold" style={{ color: 'var(--navbar-indicator)' }}>{Math.round(progress)}%</span>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-full h-3 rounded-full overflow-hidden shadow-inner" style={{ backgroundColor: 'var(--background)' }}>
-          <div
-            className="h-full transition-all duration-500 ease-out rounded-full"
-            style={{ width: `${progress}%`, backgroundColor: 'var(--navbar-indicator)' }}
-          />
-        </div>
+    <div className="w-full space-y-4 p-6 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--navbar-indicator)' }} />
+        <p className="text-sm font-medium smooth-transition" style={{ color: 'var(--foreground)' }}>
+          {getStatusMessage()}
+        </p>
       </div>
 
-      {/* Phase Indicators */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-        <div className="text-center p-3 rounded-lg transition-all duration-300" style={{
-          backgroundColor: progress >= 25 ? 'var(--navbar-indicator)' : 'var(--background)',
-          color: progress >= 25 ? '#101010' : 'var(--navbar-white-icon)',
-          fontWeight: progress >= 25 ? '600' : 'normal',
-        }}>
-          <div className="mb-1">{progress >= 25 ? '✓' : '○'}</div>
-          Extract Key Info
-        </div>
-        <div className="text-center p-3 rounded-lg transition-all duration-300" style={{
-          backgroundColor: progress >= 50 ? 'var(--navbar-indicator)' : 'var(--background)',
-          color: progress >= 50 ? '#101010' : 'var(--navbar-white-icon)',
-          fontWeight: progress >= 50 ? '600' : 'normal',
-        }}>
-          <div className="mb-1">{progress >= 50 ? '✓' : '○'}</div>
-          Generate Summary
-        </div>
-        <div className="text-center p-3 rounded-lg transition-all duration-300" style={{
-          backgroundColor: progress >= 75 ? 'var(--navbar-indicator)' : 'var(--background)',
-          color: progress >= 75 ? '#101010' : 'var(--navbar-white-icon)',
-          fontWeight: progress >= 75 ? '600' : 'normal',
-        }}>
-          <div className="mb-1">{progress >= 75 ? '✓' : '○'}</div>
-          Translate Arabic
-        </div>
-        <div className="text-center p-3 rounded-lg transition-all duration-300" style={{
-          backgroundColor: progress >= 100 ? 'var(--navbar-indicator)' : 'var(--background)',
-          color: progress >= 100 ? '#101010' : 'var(--navbar-white-icon)',
-          fontWeight: progress >= 100 ? '600' : 'normal',
-        }}>
-          <div className="mb-1">{progress >= 100 ? '✓' : '○'}</div>
-          Match Sentences
-        </div>
+      <div className="w-full h-1.5 rounded-full overflow-hidden smooth-transition" style={{ backgroundColor: 'var(--background)' }}>
+        <div
+          className="h-full transition-all duration-700 ease-out shimmer-progress"
+          style={{
+            width: `${progress}%`,
+            background: 'linear-gradient(90deg, var(--navbar-indicator), #c49fff)',
+            backgroundSize: '200% 100%'
+          }}
+        />
       </div>
+
+      <p className="text-xs text-center font-semibold smooth-transition" style={{ color: 'var(--navbar-white-icon)' }}>
+        {Math.round(progress)}% complete
+      </p>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+        .shimmer-progress {
+          animation: shimmer 2s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
