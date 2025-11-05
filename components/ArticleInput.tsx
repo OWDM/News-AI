@@ -87,46 +87,56 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
 
   return (
     <div className="w-full p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-      {/* Input Area */}
-      <div className="relative rounded-xl smooth-transition" style={{
-        backgroundColor: 'var(--background)',
-      }}>
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={(e) => handleInputChange(e.target.value)}
-          placeholder={placeholders[placeholderIndex]}
-          rows={1}
-          className="w-full p-5 rounded-xl border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder-fade scrollbar-thin transition-all duration-300"
+      {/* Input Area with Shine Border */}
+      <div className="relative rounded-xl p-[2px]">
+        {/* Shine Border Effect */}
+        <div
+          className="shine-border animate-shine"
           style={{
-            backgroundColor: 'var(--background)',
-            borderColor: validationError ? '#ff4444' : 'var(--border-color)',
-            color: 'var(--foreground)',
-            minHeight: '56px',
-            maxHeight: '280px',
-            overflow: 'auto',
-            paddingRight: isValid || isProcessing ? '60px' : '20px',
-            paddingBottom: '20px',
-          }}
-          disabled={isProcessing}
+            padding: '2px',
+            '--shine-color-1': '#a476ff',
+            '--shine-color-2': '#A9FF5B',
+          } as React.CSSProperties}
         />
 
-        {/* Inline Submit Button - Bottom Right Inside Border */}
-        {isValid && !isProcessing && (
-          <button
-            onClick={handleSubmit}
-            className="absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition hover:scale-110 z-10 animate-scaleIn"
+        {/* Inner container - fills the space created by padding */}
+        <div className="relative rounded-[10px] bg-[var(--background)]">
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => handleInputChange(e.target.value)}
+            placeholder={placeholders[placeholderIndex]}
+            rows={1}
+            className="w-full p-5 bg-transparent rounded-[10px] border-0 focus:outline-none focus:ring-0 focus:border-0 resize-none placeholder-fade scrollbar-thin transition-all duration-300"
             style={{
-              backgroundColor: 'var(--navbar-indicator)',
-              color: '#101010',
-              boxShadow: '0 2px 8px rgba(169, 255, 91, 0.4)',
+              color: 'var(--foreground)',
+              minHeight: '56px',
+              maxHeight: '280px',
+              overflow: 'auto',
+              paddingRight: isValid || isProcessing ? '60px' : '20px',
+              paddingBottom: '20px',
+              boxShadow: 'none',
             }}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-          </button>
-        )}
+            disabled={isProcessing}
+          />
+
+          {/* Inline Submit Button - Bottom Right Inside Border */}
+          {isValid && !isProcessing && (
+            <button
+              onClick={handleSubmit}
+              className="absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition hover:scale-110 animate-scaleIn"
+              style={{
+                backgroundColor: 'var(--navbar-indicator)',
+                color: '#101010',
+                boxShadow: '0 2px 8px rgba(169, 255, 91, 0.4)',
+              }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Validation Error */}
