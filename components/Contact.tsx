@@ -33,7 +33,7 @@ export default function Contact() {
             <TextAnimate
               animation="blurInUp"
               by="character"
-              duration={5}
+              duration={0.5}
               className="text-sm font-medium mb-3"
               style={{ color: 'var(--navbar-indicator)' }}
             >
