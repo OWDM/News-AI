@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function Footer() {
   return (
     <footer className="w-full py-8 mt-20" style={{ backgroundColor: 'var(--component-bg)', borderTop: '1px solid var(--border-color)' }}>
@@ -7,9 +9,11 @@ export default function Footer() {
         <div className="flex flex-col gap-6">
           {/* First line - News AI (left) and Social Icons (right) */}
           <div className="flex items-center justify-between pb-6 border-b" style={{ borderColor: 'var(--border-color)' }}>
-            <h2 className="text-5xl tracking-tight" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
-              News AI
-            </h2>
+            <Link href="/" className="cursor-pointer">
+              <h2 className="text-5xl tracking-tight" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
+                News AI
+              </h2>
+            </Link>
 
             {/* Social Icons */}
             <div className="flex items-center gap-4">
@@ -56,11 +60,13 @@ export default function Footer() {
 
           {/* Second line - Logo (left) and Page Links (right) */}
           <div className="flex items-center justify-between">
-            <img
-              src="/newsai-logo.png"
-              alt="News AI Logo"
-              className="w-16 h-16 object-contain"
-            />
+            <Link href="/" className="cursor-pointer">
+              <img
+                src="/newsai-logo.png"
+                alt="News AI Logo"
+                className="w-16 h-16 object-contain"
+              />
+            </Link>
 
             <div className="flex items-center gap-6">
               <a href="/#home" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }}>
