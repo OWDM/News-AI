@@ -56,10 +56,19 @@ The main application (`app/page.tsx`) orchestrates a 5-step pipeline:
 
 ### Component Structure
 
-- `ArticleInput.tsx` - Dual-mode input (URL or direct text)
+- `ArticleInput.tsx` - Smart single-input textarea with automatic URL/text detection
+  - Auto-detects URLs using regex pattern matching
+  - Validates single URL limit (prevents multiple URLs)
+  - Auto-grows from 1 line to 10 lines max (280px)
+  - Rotating placeholder examples with 3D flip animation
+  - Inline submit button (up arrow) appears when input is valid
+  - Custom scrollbar for content exceeding 10 lines
 - `ProcessingProgress.tsx` - Real-time progress indicator (0-100%)
 - `SummaryDisplay.tsx` - English + Arabic summaries with highlighting toggle
 - `ArticleDisplay.tsx` - Original article with synchronized highlighting
+- `Navbar.tsx` - Animated navbar with scroll-responsive width and active section indicators
+- `Contact.tsx` - Contact form with dark theme autofill styling
+- `Footer.tsx` - Minimalist footer with logo and branding
 
 Highlighting works by matching summary sentences to article sentences via LLM-based alignment.
 
@@ -80,6 +89,37 @@ Uses React `useState` for client-side state in `app/page.tsx` - no external stat
 - Article, summary, and translation
 - Sentence matches for highlighting
 - Error state
+
+## UI/UX Features
+
+### Design System
+- **Dark theme** with CSS custom properties in `globals.css`
+- **Color palette**: Dark backgrounds (#101010), purple accent (#a476ff), green indicator (#A9FF5B)
+- **Typography**: Montserrat for body, Bungee for branding/logo
+- Custom scrollbar styling for better dark mode aesthetics
+
+### Input Component Features
+- **Smart input detection**: Single textarea automatically determines if input is URL or article text
+- **Dynamic sizing**: Grows from 1 line to 10 lines, then shows scrollbar
+- **Rotating placeholders**: 4 example inputs rotate every 4 seconds with 3D flip animation
+- **Inline submission**: Green arrow button appears in bottom-right when valid input detected
+- **Validation feedback**: Red border and error message for multiple URLs
+
+### Navbar Behavior
+- **Scroll-responsive**: Width animates from 80% to compact size on scroll (desktop only)
+- **Active indicators**: Green dot shows current section (home/generator/contact)
+- **Logo animation**: Logo fades in on scroll (after 50px threshold)
+- **Mobile-optimized**: Fixed bottom navbar on mobile, top navbar on desktop
+
+### Form Styling
+- **Autofill compatibility**: Custom styling prevents white background on browser autofill
+- **RTL support**: Arabic text properly aligned right-to-left with `dir="rtl"`
+- **Focus states**: Purple outline on input focus using `--sec` color variable
+
+### Page Layout
+- **Full viewport sections**: Each section uses `min-h-screen` for natural scroll stops
+- **Responsive spacing**: Top padding on generator section prevents navbar overlap
+- **Smooth scrolling**: Anchor links use smooth scroll behavior for better UX
 
 ## Key Technical Details
 
