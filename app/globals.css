@@ -684,3 +684,36 @@ body {
   opacity: 0;
   animation: logoEntrance 0.8s ease-out 0.4s forwards;
 }
+
+/* ==================== SHINE BORDER ANIMATION ==================== */
+
+@keyframes shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  to {
+    background-position: 0% 0%;
+  }
+}
+
+.animate-shine {
+  animation: shine 14s infinite linear;
+}
+
+/* Shine border utility - applies animated gradient border */
+.shine-border {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(transparent, transparent, var(--shine-color-1, #a476ff), var(--shine-color-2, #A9FF5B), transparent, transparent);
+  background-size: 300% 300%;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  border-radius: inherit;
+  will-change: background-position;
+}
