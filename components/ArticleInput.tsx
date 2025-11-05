@@ -83,6 +83,15 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // If Enter is pressed without Shift, submit the form
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent new line
+      handleSubmit();
+    }
+    // If Shift+Enter is pressed, allow default behavior (new line)
+  };
+
   const isValid = input.trim().length > 0 && !validationError;
 
   return (
@@ -105,6 +114,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
             ref={textareaRef}
             value={input}
             onChange={(e) => handleInputChange(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder={placeholders[placeholderIndex]}
             rows={1}
             className="w-full p-5 bg-transparent rounded-[6px] border-0 focus:outline-none focus:ring-0 focus:border-0 focus:bg-transparent active:bg-transparent resize-none placeholder-fade scrollbar-thin transition-none"

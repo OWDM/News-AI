@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { MagicCard } from './MagicCard';
+import { TextAnimate } from '@/registry/magicui/text-animate';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -29,15 +30,32 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Text */}
           <div>
-            <p className="text-sm font-medium mb-3 animate-contact-label" style={{ color: 'var(--navbar-indicator)' }}>
+            <TextAnimate
+              animation="blurInUp"
+              by="character"
+              duration={5}
+              className="text-sm font-medium mb-3"
+              style={{ color: 'var(--navbar-indicator)' }}
+            >
               [Contact]
-            </p>
-            <h2 className="text-5xl font-bold mb-4 animate-contact-heading" style={{ color: 'var(--foreground)' }}>
+            </TextAnimate>
+            <TextAnimate
+              animation="blurInUp"
+              by="character"
+              once
+              className="text-5xl font-bold mb-4"
+              style={{ color: 'var(--foreground)' }}
+            >
               Drop Me a Message
-            </h2>
-            <p className="text-sm leading-relaxed animate-contact-description" style={{ color: 'var(--navbar-white-icon)' }}>
+            </TextAnimate>
+            <TextAnimate
+              animation="blurIn"
+              as="p"
+              className="text-sm leading-relaxed"
+              style={{ color: 'var(--navbar-white-icon)' }}
+            >
               Have questions or feedback? I&apos;d love to hear from you. Fill out the form and I&apos;ll get back to you as soon as possible.
-            </p>
+            </TextAnimate>
           </div>
 
           {/* Right Side - Form */}

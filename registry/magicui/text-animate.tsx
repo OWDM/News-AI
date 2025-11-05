@@ -3,7 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import { useMemo } from "react";
 
-type AnimationType = "blurInUp" | "fadeIn" | "slideUp" | "slideDown";
+type AnimationType = "blurInUp" | "blurIn" | "fadeIn" | "slideUp" | "slideDown";
 type SegmentationType = "character" | "word" | "line";
 
 interface TextAnimateProps {
@@ -15,6 +15,7 @@ interface TextAnimateProps {
   style?: React.CSSProperties;
   once?: boolean;
   delay?: number;
+  duration?: number;
   staggerDelay?: number;
 }
 
@@ -29,6 +30,16 @@ const animations: Record<AnimationType, { initial: any; animate: any }> = {
       filter: "blur(0px)",
       opacity: 1,
       y: 0,
+    },
+  },
+  blurIn: {
+    initial: {
+      filter: "blur(10px)",
+      opacity: 0,
+    },
+    animate: {
+      filter: "blur(0px)",
+      opacity: 1,
     },
   },
   fadeIn: {
@@ -83,6 +94,7 @@ export function TextAnimate({
   style,
   once = true,
   delay = 0,
+  duration = 0.5,
   staggerDelay = 0.03,
 }: TextAnimateProps) {
   const segments = useMemo(() => splitTextByType(children, by), [children, by]);
@@ -103,7 +115,7 @@ export function TextAnimate({
     visible: {
       ...selectedAnimation.animate,
       transition: {
-        duration: 0.5,
+        duration: duration,
         ease: "easeOut",
       },
     },
