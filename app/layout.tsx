@@ -3,8 +3,11 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
-  title: 'NewsAI - AI-Powered Newsletter Assistant',
+  title: 'News AI - AI-Powered Newsletter Assistant',
   description: 'Generate structured summaries and Arabic translations of technical articles using AI',
+  icons: {
+    icon: '/newsai-logo.png',
+  },
 };
 
 export default function RootLayout({

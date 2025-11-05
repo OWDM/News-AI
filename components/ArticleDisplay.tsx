@@ -13,12 +13,12 @@ export default function ArticleDisplay({
   matches,
   showHighlighting,
 }: ArticleDisplayProps) {
-  // Generate colors for highlighting (HSV-based like Python version)
+  // Generate colors for highlighting (optimized for dark mode)
   const generateColors = (count: number): string[] => {
     const colors: string[] = [];
     for (let i = 0; i < count; i++) {
       const hue = (i * 360) / count;
-      colors.push(`hsl(${hue}, 70%, 80%)`);
+      colors.push(`hsl(${hue}, 65%, 40%)`);
     }
     return colors;
   };

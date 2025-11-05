@@ -1,18 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [isScrolling, setIsScrolling] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const pathname = usePathname();
 
   useEffect(() => {
     const nav = document.getElementById('main-nav');
     const maxScroll = 1000;
+    const scrollThreshold = 50; // Only trigger after 50px scroll
     let rafId: number | null = null;
 
     const updateNav = () => {
-      if (window.scrollY > 0) {
+      if (window.scrollY > scrollThreshold) {
         setIsScrolling(true);
 
         const scrollProgress = Math.min(window.scrollY / maxScroll, 1);
@@ -87,54 +91,108 @@ export default function Navbar() {
       >
         <div className="navbar-container">
           <ul className="navbar-list">
+            {isScrolling && (
+              <li className="navbar-item navbar-logo-item">
+                <Link href="/" className="navbar-link flex items-center justify-center">
+                  <img
+                    src="/newsai-logo.png"
+                    alt="News AI Logo"
+                    className="w-12 h-12 object-contain"
+                  />
+                </Link>
+              </li>
+            )}
             <li className="navbar-item">
-              <a
-                href="#home"
-                onClick={(e) => handleLinkClick(e, 'home')}
-                className={`navbar-link ${activeSection === 'home' ? 'active' : ''}`}
-              >
-                <div className="nav-indicator hidden md:block"></div>
-                <span className="md:hidden navbar-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                  >
-                    <path d="M21 20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9.48907C3 9.18048 3.14247 8.88917 3.38606 8.69972L11.3861 2.47749C11.7472 2.19663 12.2528 2.19663 12.6139 2.47749L20.6139 8.69972C20.8575 8.88917 21 9.18048 21 9.48907V20ZM19 19V9.97815L12 4.53371L5 9.97815V19H19Z"></path>
-                  </svg>
-                </span>
-                <span className="hidden md:inline-block">Home</span>
-                <span className="md:hidden navbar-label">Home</span>
-              </a>
+              {pathname === '/' ? (
+                <a
+                  href="#home"
+                  onClick={(e) => handleLinkClick(e, 'home')}
+                  className={`navbar-link ${activeSection === 'home' ? 'active' : ''}`}
+                >
+                  <div className="nav-indicator hidden md:block"></div>
+                  <span className="md:hidden navbar-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M21 20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9.48907C3 9.18048 3.14247 8.88917 3.38606 8.69972L11.3861 2.47749C11.7472 2.19663 12.2528 2.19663 12.6139 2.47749L20.6139 8.69972C20.8575 8.88917 21 9.18048 21 9.48907V20ZM19 19V9.97815L12 4.53371L5 9.97815V19H19Z"></path>
+                    </svg>
+                  </span>
+                  <span className="hidden md:inline-block">Home</span>
+                  <span className="md:hidden navbar-label">Home</span>
+                </a>
+              ) : (
+                <Link
+                  href="/"
+                  className={`navbar-link ${activeSection === 'home' ? 'active' : ''}`}
+                >
+                  <div className="nav-indicator hidden md:block"></div>
+                  <span className="md:hidden navbar-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M21 20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9.48907C3 9.18048 3.14247 8.88917 3.38606 8.69972L11.3861 2.47749C11.7472 2.19663 12.2528 2.19663 12.6139 2.47749L20.6139 8.69972C20.8575 8.88917 21 9.18048 21 9.48907V20ZM19 19V9.97815L12 4.53371L5 9.97815V19H19Z"></path>
+                    </svg>
+                  </span>
+                  <span className="hidden md:inline-block">Home</span>
+                  <span className="md:hidden navbar-label">Home</span>
+                </Link>
+              )}
             </li>
             <li className="navbar-item">
-              <a
-                href="#projects"
-                onClick={(e) => handleLinkClick(e, 'projects')}
-                className={`navbar-link ${activeSection === 'projects' ? 'active' : ''}`}
-              >
-                <div className="nav-indicator hidden md:block"></div>
-                <span className="md:hidden navbar-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                  >
-                    <path d="M4 5V19H20V7H11.5858L9.58579 5H4ZM12.4142 5H21C21.5523 5 22 5.44772 22 6V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H10.4142L12.4142 5Z"></path>
-                  </svg>
-                </span>
-                <span className="hidden md:inline-block">Projects</span>
-                <span className="md:hidden navbar-label">Projects</span>
-              </a>
+              {pathname === '/' ? (
+                <a
+                  href="#generator"
+                  onClick={(e) => handleLinkClick(e, 'generator')}
+                  className={`navbar-link ${activeSection === 'generator' ? 'active' : ''}`}
+                >
+                  <div className="nav-indicator hidden md:block"></div>
+                  <span className="md:hidden navbar-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M13 10H18L12 16V12H7L13 6V10ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"></path>
+                    </svg>
+                  </span>
+                  <span className="hidden md:inline-block">Generator</span>
+                  <span className="md:hidden navbar-label">Generator</span>
+                </a>
+              ) : (
+                <Link
+                  href="/#generator"
+                  className={`navbar-link ${activeSection === 'generator' ? 'active' : ''}`}
+                >
+                  <div className="nav-indicator hidden md:block"></div>
+                  <span className="md:hidden navbar-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M13 10H18L12 16V12H7L13 6V10ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"></path>
+                    </svg>
+                  </span>
+                  <span className="hidden md:inline-block">Generator</span>
+                  <span className="md:hidden navbar-label">Generator</span>
+                </Link>
+              )}
             </li>
             <li className="navbar-item">
-              <a
-                href="#contact"
-                onClick={(e) => handleLinkClick(e, 'contact')}
+              <Link
+                href="/contact"
                 className={`navbar-link ${activeSection === 'contact' ? 'active' : ''}`}
               >
                 <div className="nav-indicator hidden md:block"></div>
@@ -151,7 +209,7 @@ export default function Navbar() {
                 </span>
                 <span className="hidden md:inline-block">Contact</span>
                 <span className="md:hidden navbar-label">Contact</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

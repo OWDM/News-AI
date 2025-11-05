@@ -203,20 +203,29 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
       {/* Header */}
-      <section id="home">
-        <header className="py-12" style={{ backgroundColor: 'var(--component-bg)', borderBottom: '1px solid var(--border-color)' }}>
-          <div className="max-w-7xl mx-auto px-8">
-            <h1 className="text-5xl font-bold mb-3 tracking-tight" style={{ color: 'var(--foreground)' }}>NewsAI</h1>
-            <p className="text-xl" style={{ color: 'var(--navbar-white-icon)' }}>
-              AI-Powered Newsletter Assistant - Generate Summaries & Arabic Translations
+      <section id="home" className="min-h-screen flex flex-col justify-center">
+        <header className="text-center">
+          <div className="max-w-4xl mx-auto px-8">
+            <div className="flex items-center justify-center gap-6 mb-6">
+              <img
+                src="/newsai-logo.png"
+                alt="News AI Logo"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain"
+              />
+              <h1 className="text-7xl md:text-8xl tracking-tight" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
+                News AI
+              </h1>
+            </div>
+            <p className="text-xl md:text-2xl leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
+              Transform technical articles into structured summaries with AI-powered translations
             </p>
           </div>
         </header>
       </section>
 
       {/* Main Content */}
-      <section id="projects">
-        <main className="px-8 py-12">
+      <section id="generator" className="min-h-screen">
+        <main className="px-8 py-16">
         {/* Input Section */}
         {!processingComplete && (
           <div className="max-w-4xl mx-auto mb-12">
@@ -242,37 +251,29 @@ export default function Home() {
         {/* Results Section */}
         {processingComplete && state.summary && (
           <>
-            {/* Controls Bar */}
-            <div className="max-w-7xl mx-auto mb-8 p-6 rounded-xl shadow-md" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <ToggleSwitch
-                  enabled={showHighlighting}
-                  onToggle={() => setShowHighlighting(!showHighlighting)}
-                  label="Show Highlighting"
-                />
-
-                <button
-                  onClick={() => {
-                    setProcessingComplete(false);
-                    setState({
-                      isProcessing: false,
-                      currentPhase: '',
-                      progress: 0,
-                      error: null,
-                      article: '',
-                      summary: '',
-                      arabicSummary: '',
-                      highlightedArticle: '',
-                      highlightedSummary: '',
-                      matchedSentences: [],
-                    });
-                  }}
-                  className="px-6 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
-                  style={{ backgroundColor: 'var(--navbar-indicator)', color: '#101010' }}
-                >
-                  ✨ Process New Article
-                </button>
-              </div>
+            {/* New Article Button */}
+            <div className="max-w-7xl mx-auto mb-8 text-center">
+              <button
+                onClick={() => {
+                  setProcessingComplete(false);
+                  setState({
+                    isProcessing: false,
+                    currentPhase: '',
+                    progress: 0,
+                    error: null,
+                    article: '',
+                    summary: '',
+                    arabicSummary: '',
+                    highlightedArticle: '',
+                    highlightedSummary: '',
+                    matchedSentences: [],
+                  });
+                }}
+                className="px-8 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
+                style={{ backgroundColor: 'var(--navbar-indicator)', color: '#101010' }}
+              >
+                ✨ Process New Article
+              </button>
             </div>
 
             {/* Arabic Summary - Full Width */}
@@ -282,6 +283,15 @@ export default function Home() {
               matches={state.matchedSentences}
               showHighlighting={showHighlighting}
             />
+
+            {/* Highlight Toggle */}
+            <div className="max-w-7xl mx-auto mb-8 flex justify-center">
+              <ToggleSwitch
+                enabled={showHighlighting}
+                onToggle={() => setShowHighlighting(!showHighlighting)}
+                label="Show Highlighting"
+              />
+            </div>
 
             {/* Two Column Layout: Article (left) + English Summary (right sticky) */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -313,7 +323,7 @@ export default function Home() {
                           const colors: string[] = [];
                           for (let i = 0; i < count; i++) {
                             const hue = (i * 360) / count;
-                            colors.push(`hsl(${hue}, 70%, 80%)`);
+                            colors.push(`hsl(${hue}, 65%, 40%)`);
                           }
                           return colors;
                         };
@@ -338,9 +348,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <section id="contact">
-        <Footer />
-      </section>
+      <Footer />
     </div>
   );
 }

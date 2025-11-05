@@ -1,4 +1,4 @@
-// Type definitions for NewsAI Next.js application
+// Type definitions for News AI Next.js application
 
 export interface KeyInfo {
   answer1: string; // Main technical concepts
