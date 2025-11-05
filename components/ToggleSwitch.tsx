@@ -12,9 +12,9 @@ export default function ToggleSwitch({ enabled, onToggle, label }: ToggleSwitchP
       backgroundColor: 'var(--card-bg)',
       border: '2px solid var(--border-color)'
     }}>
-      {label && (
-        <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>{label}</span>
-      )}
+      <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+        {enabled ? 'Hide Highlighting' : 'Show Highlighting'}
+      </span>
       <button
         type="button"
         onClick={onToggle}
@@ -34,16 +34,6 @@ export default function ToggleSwitch({ enabled, onToggle, label }: ToggleSwitchP
           }}
         />
       </button>
-      {enabled && (
-        <span className="text-xs font-medium animate-fadeIn" style={{ color: 'var(--navbar-indicator)' }}>
-          ON
-        </span>
-      )}
-      {!enabled && (
-        <span className="text-xs font-medium animate-fadeIn" style={{ color: 'var(--navbar-white-icon)' }}>
-          OFF
-        </span>
-      )}
     </div>
   );
 }
