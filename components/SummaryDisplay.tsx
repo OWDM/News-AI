@@ -1,7 +1,8 @@
 'use client';
 
 import { SentenceMatch } from '@/types';
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
+import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
 
 interface SummaryDisplayProps {
   summary: string;
@@ -40,27 +41,59 @@ export default function SummaryDisplay({
     return colors;
   };
 
-  const highlightSummary = () => {
+  const renderHighlightedText = (text: string) => {
     if (!showHighlighting || !matches || matches.length === 0) {
-      return summary;
+      return <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>;
     }
 
     const colors = generateColors(matches.length);
-    let highlightedText = summary;
+    let remainingText = text;
+    const elements: React.ReactNode[] = [];
+    let keyCounter = 0;
 
     matches.forEach((match, index) => {
       const sentence = match.summary_sentence;
       const color = colors[index];
-      const animationDelay = index * 0.8; // 800ms delay between each highlight
-      const animationClass = isFirstTime ? 'highlight-animate-first-time' : 'highlight-animate';
-      const style = isFirstTime
-        ? `background-image: linear-gradient(to right, ${color}, ${color}); animation-delay: ${animationDelay}s;`
-        : `background-color: ${color}; padding: 2px 4px; border-radius: 3px;`;
-      const highlighted = `<span class="${animationClass}" style="${style}">${sentence}</span>`;
-      highlightedText = highlightedText.replace(sentence, highlighted);
+      const animationDelay = index * 1200; // 1200ms delay between each color group
+
+      const sentenceIndex = remainingText.indexOf(sentence);
+      if (sentenceIndex !== -1) {
+        // Add text before the sentence (preserve whitespace)
+        if (sentenceIndex > 0) {
+          const beforeText = remainingText.substring(0, sentenceIndex);
+          elements.push(
+            <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+              {beforeText}
+            </span>
+          );
+        }
+
+        // Add highlighted sentence
+        elements.push(
+          <HighlightText
+            key={`highlight-${keyCounter++}`}
+            text={sentence}
+            color={color}
+            duration={1.5}
+            delay={isFirstTime ? animationDelay : 0}
+          />
+        );
+
+        // Update remaining text
+        remainingText = remainingText.substring(sentenceIndex + sentence.length);
+      }
     });
 
-    return highlightedText;
+    // Add any remaining text (preserve whitespace)
+    if (remainingText) {
+      elements.push(
+        <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+          {remainingText}
+        </span>
+      );
+    }
+
+    return <>{elements}</>;
   };
 
   return (
@@ -100,18 +133,26 @@ export default function SummaryDisplay({
           className="leading-loose whitespace-pre-wrap"
           dir="rtl"
           style={{ color: 'var(--foreground)', textAlign: 'right', lineHeight: '2' }}
-          dangerouslySetInnerHTML={{
-            __html: (() => {
-              const lines = arabicSummary.split('\n').filter(line => line.trim());
-              if (lines.length === 0) return arabicSummary;
+        >
+          {(() => {
+            const lines = arabicSummary.split('\n').filter(line => line.trim());
+            if (lines.length === 0) return renderHighlightedText(arabicSummary);
 
-              const title = lines[0];
-              const rest = lines.slice(1).join('\n');
+            const title = lines[0];
+            const rest = lines.slice(1).join('\n');
 
-              return `<div class="text-3xl font-bold mb-6" style="line-height: 1.4;">${title}</div><div class="text-xl">${rest}</div>`;
-            })()
-          }}
-        />
+            return (
+              <>
+                <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
+                  {title}
+                </div>
+                <div className="text-xl">
+                  {renderHighlightedText(rest)}
+                </div>
+              </>
+            );
+          })()}
+        </div>
       </div>
     </div>
   );

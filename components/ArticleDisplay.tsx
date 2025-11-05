@@ -1,6 +1,8 @@
 'use client';
 
 import { SentenceMatch } from '@/types';
+import { Fragment } from 'react';
+import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
 
 interface ArticleDisplayProps {
   article: string;
@@ -25,43 +27,74 @@ export default function ArticleDisplay({
     return colors;
   };
 
-  const highlightArticle = () => {
-    let highlightedText = article;
-
-    if (showHighlighting && matches && matches.length > 0) {
-      const colors = generateColors(matches.length);
-
-      // Build a map of all article sentences to their colors and match index
-      const sentenceMap: Record<string, { color: string; matchIndex: number }> = {};
-
-      matches.forEach((match, index) => {
-        const color = colors[index];
-        match.article_sentences.forEach((sentence) => {
-          sentenceMap[sentence] = { color, matchIndex: index };
-        });
-      });
-
-      // Highlight all matching sentences with staggered animation based on match index
-      Object.entries(sentenceMap).forEach(([sentence, { color, matchIndex }]) => {
-        const animationDelay = matchIndex * 0.8; // 800ms delay between each highlight group
-        const animationClass = isFirstTime ? 'highlight-animate-first-time' : 'highlight-animate';
-        const style = isFirstTime
-          ? `background-image: linear-gradient(to right, ${color}, ${color}); animation-delay: ${animationDelay}s;`
-          : `background-color: ${color}; padding: 2px 4px; border-radius: 3px;`;
-        const highlighted = `<span class="${animationClass}" style="${style}">${sentence}</span>`;
-        highlightedText = highlightedText.replace(sentence, highlighted);
-      });
+  const renderHighlightedArticle = (text: string) => {
+    if (!showHighlighting || !matches || matches.length === 0) {
+      return <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>;
     }
 
-    // Make first line (title) larger
-    const lines = highlightedText.split('\n').filter(line => line.trim());
-    if (lines.length > 0) {
-      const title = lines[0];
-      const rest = lines.slice(1).join('\n');
-      return `<div class="text-3xl font-bold mb-6" style="line-height: 1.4;">${title}</div><div class="text-base">${rest}</div>`;
+    const colors = generateColors(matches.length);
+
+    // Build a map of all article sentences to their colors and match index
+    const sentenceMap: Record<string, { color: string; matchIndex: number }> = {};
+
+    matches.forEach((match, index) => {
+      const color = colors[index];
+      match.article_sentences.forEach((sentence) => {
+        sentenceMap[sentence] = { color, matchIndex: index };
+      });
+    });
+
+    // Sort sentences by their appearance in the text
+    const sortedSentences = Object.keys(sentenceMap).sort((a, b) => {
+      return text.indexOf(a) - text.indexOf(b);
+    });
+
+    let remainingText = text;
+    const elements: React.ReactNode[] = [];
+    let keyCounter = 0;
+
+    sortedSentences.forEach((sentence) => {
+      const { color, matchIndex } = sentenceMap[sentence];
+      const animationDelay = matchIndex * 1200; // 1200ms delay between each color group
+
+      const sentenceIndex = remainingText.indexOf(sentence);
+      if (sentenceIndex !== -1) {
+        // Add text before the sentence (preserve whitespace)
+        if (sentenceIndex > 0) {
+          const beforeText = remainingText.substring(0, sentenceIndex);
+          elements.push(
+            <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+              {beforeText}
+            </span>
+          );
+        }
+
+        // Add highlighted sentence
+        elements.push(
+          <HighlightText
+            key={`highlight-${keyCounter++}`}
+            text={sentence}
+            color={color}
+            duration={1.5}
+            delay={isFirstTime ? animationDelay : 0}
+          />
+        );
+
+        // Update remaining text
+        remainingText = remainingText.substring(sentenceIndex + sentence.length);
+      }
+    });
+
+    // Add any remaining text (preserve whitespace)
+    if (remainingText) {
+      elements.push(
+        <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+          {remainingText}
+        </span>
+      );
     }
 
-    return highlightedText;
+    return <>{elements}</>;
   };
 
   return (
@@ -76,8 +109,26 @@ export default function ArticleDisplay({
       <div
         className="leading-relaxed whitespace-pre-wrap max-h-[600px] overflow-y-auto pr-4 scrollbar-thin text-base"
         style={{ color: 'var(--foreground)' }}
-        dangerouslySetInnerHTML={{ __html: highlightArticle() }}
-      />
+      >
+        {(() => {
+          const lines = article.split('\n').filter(line => line.trim());
+          if (lines.length === 0) return renderHighlightedArticle(article);
+
+          const title = lines[0];
+          const rest = lines.slice(1).join('\n');
+
+          return (
+            <>
+              <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
+                {title}
+              </div>
+              <div className="text-base">
+                {renderHighlightedArticle(rest)}
+              </div>
+            </>
+          );
+        })()}
+      </div>
     </div>
   );
 }

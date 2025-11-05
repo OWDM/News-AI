@@ -9,13 +9,19 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home');
   const pathname = usePathname();
 
-  // Set active section based on pathname when not on home page
+  // Set active section based on pathname and hash
   useEffect(() => {
     if (pathname === '/contact') {
       setActiveSection('contact');
     } else if (pathname === '/') {
-      // On home page, active section will be determined by IntersectionObserver
-      setActiveSection('home');
+      // Check if there's a hash in the URL
+      const hash = window.location.hash.replace('#', '');
+      if (hash && ['home', 'generator', 'contact'].includes(hash)) {
+        setActiveSection(hash);
+      } else {
+        // Default to home if no hash
+        setActiveSection('home');
+      }
     }
   }, [pathname]);
 
@@ -41,7 +47,7 @@ export default function Navbar() {
         }
       } else {
         setIsScrolling(false);
-        if (nav) {
+        if (nav && window.innerWidth >= 768) {
           nav.style.setProperty('width', '80%');
         }
       }
@@ -54,16 +60,24 @@ export default function Navbar() {
       }
     };
 
+    // Check initial scroll position
+    updateNav();
+
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // Active section detection (only on home page)
+    let observer: IntersectionObserver | null = null;
+
     if (pathname === '/') {
       const sections = document.querySelectorAll('section[id]');
-      const observerOptions = { threshold: 0.6 };
+      const observerOptions = {
+        threshold: [0.3, 0.5, 0.7],
+        rootMargin: '-20% 0px -35% 0px'
+      };
 
       const observerCallback = (entries: IntersectionObserverEntry[]) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
             const id = entry.target.getAttribute('id');
             if (id) {
               setActiveSection(id);
@@ -72,16 +86,8 @@ export default function Navbar() {
         });
       };
 
-      const observer = new IntersectionObserver(observerCallback, observerOptions);
-      sections.forEach((section) => observer.observe(section));
-
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-        }
-        observer.disconnect();
-      };
+      observer = new IntersectionObserver(observerCallback, observerOptions);
+      sections.forEach((section) => observer!.observe(section));
     }
 
     return () => {
@@ -89,11 +95,18 @@ export default function Navbar() {
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
+      if (observer) {
+        observer.disconnect();
+      }
     };
   }, [pathname]);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
+
+    // Update active section immediately
+    setActiveSection(targetId);
+
     const targetElement = document.getElementById(targetId);
     if (targetElement) {
       targetElement.scrollIntoView({

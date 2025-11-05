@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import ArticleInput from '@/components/ArticleInput';
 import ProcessingProgress from '@/components/ProcessingProgress';
 import SummaryDisplay from '@/components/SummaryDisplay';
 import ArticleDisplay from '@/components/ArticleDisplay';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Footer from '@/components/Footer';
+import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
 
 export default function Home() {
@@ -356,47 +357,93 @@ export default function Home() {
                   <div
                     className="leading-relaxed whitespace-pre-wrap"
                     style={{ color: 'var(--foreground)', lineHeight: '1.8' }}
-                    dangerouslySetInnerHTML={{
-                      __html: (() => {
-                        let highlightedText = state.summary;
+                  >
+                    {(() => {
+                      const renderHighlightedText = (text: string) => {
+                        if (!showHighlighting || !state.matchedSentences || state.matchedSentences.length === 0) {
+                          return <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>;
+                        }
 
-                        if (showHighlighting && state.matchedSentences && state.matchedSentences.length > 0) {
-                          const generateColors = (count: number): string[] => {
-                            const colors: string[] = [];
-                            for (let i = 0; i < count; i++) {
-                              const hue = (i * 360) / count;
-                              colors.push(`hsl(${hue}, 65%, 40%)`);
+                        const generateColors = (count: number): string[] => {
+                          const colors: string[] = [];
+                          for (let i = 0; i < count; i++) {
+                            const hue = (i * 360) / count;
+                            colors.push(`hsl(${hue}, 65%, 40%)`);
+                          }
+                          return colors;
+                        };
+
+                        const colors = generateColors(state.matchedSentences.length);
+                        let remainingText = text;
+                        const elements: React.ReactNode[] = [];
+                        let keyCounter = 0;
+                        const isFirstTime = !hasShownHighlighting && showHighlighting;
+
+                        state.matchedSentences.forEach((match, index) => {
+                          const sentence = match.summary_sentence;
+                          const color = colors[index];
+                          const animationDelay = index * 1200; // 1200ms delay between each color group
+
+                          const sentenceIndex = remainingText.indexOf(sentence);
+                          if (sentenceIndex !== -1) {
+                            // Add text before the sentence (preserve whitespace)
+                            if (sentenceIndex > 0) {
+                              const beforeText = remainingText.substring(0, sentenceIndex);
+                              elements.push(
+                                <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+                                  {beforeText}
+                                </span>
+                              );
                             }
-                            return colors;
-                          };
-                          const colors = generateColors(state.matchedSentences.length);
 
-                          const isFirstTime = !hasShownHighlighting && showHighlighting;
-                          state.matchedSentences.forEach((match, index) => {
-                            const sentence = match.summary_sentence;
-                            const color = colors[index];
-                            const animationDelay = index * 0.8; // 800ms delay between each highlight
-                            const animationClass = isFirstTime ? 'highlight-animate-first-time' : 'highlight-animate';
-                            const style = isFirstTime
-                              ? `background-image: linear-gradient(to right, ${color}, ${color}); animation-delay: ${animationDelay}s;`
-                              : `background-color: ${color}; padding: 2px 4px; border-radius: 3px;`;
-                            const highlighted = `<span class="${animationClass}" style="${style}">${sentence}</span>`;
-                            highlightedText = highlightedText.replace(sentence, highlighted);
-                          });
+                            // Add highlighted sentence
+                            elements.push(
+                              <HighlightText
+                                key={`highlight-${keyCounter++}`}
+                                text={sentence}
+                                color={color}
+                                duration={1.5}
+                                delay={isFirstTime ? animationDelay : 0}
+                              />
+                            );
+
+                            // Update remaining text
+                            remainingText = remainingText.substring(sentenceIndex + sentence.length);
+                          }
+                        });
+
+                        // Add any remaining text (preserve whitespace)
+                        if (remainingText) {
+                          elements.push(
+                            <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+                              {remainingText}
+                            </span>
+                          );
                         }
 
-                        // Make first line (title) larger
-                        const lines = highlightedText.split('\n').filter(line => line.trim());
-                        if (lines.length > 0) {
-                          const title = lines[0];
-                          const rest = lines.slice(1).join('\n');
-                          return `<div class="text-3xl font-bold mb-6" style="line-height: 1.4;">${title}</div><div class="text-base">${rest}</div>`;
-                        }
+                        return <>{elements}</>;
+                      };
 
-                        return highlightedText;
-                      })(),
-                    }}
-                  />
+                      // Make first line (title) larger
+                      const lines = state.summary.split('\n').filter(line => line.trim());
+                      if (lines.length > 0) {
+                        const title = lines[0];
+                        const rest = lines.slice(1).join('\n');
+                        return (
+                          <>
+                            <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
+                              {title}
+                            </div>
+                            <div className="text-base">
+                              {renderHighlightedText(rest)}
+                            </div>
+                          </>
+                        );
+                      }
+
+                      return renderHighlightedText(state.summary);
+                    })()}
+                  </div>
                 </div>
               </div>
             </div>
