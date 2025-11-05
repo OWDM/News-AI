@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface ArticleInputProps {
   onSubmit: (content: string, isUrl: boolean) => void;
@@ -8,110 +8,148 @@ interface ArticleInputProps {
 }
 
 export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputProps) {
-  const [inputMode, setInputMode] = useState<'text' | 'url'>('text');
-  const [articleText, setArticleText] = useState('');
-  const [articleUrl, setArticleUrl] = useState('');
+  const [input, setInput] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const placeholders = [
+    'https://techcrunch.com/article-about-ai',
+    'Scientists at MIT have developed a new artificial intelligence system that can predict protein structures with unprecedented accuracy. The breakthrough could revolutionize drug discovery...',
+    'https://www.nature.com/articles/science-breakthrough',
+    'Researchers have discovered a novel quantum computing algorithm that promises to solve complex optimization problems exponentially faster than classical computers. The team demonstrated...',
+  ];
+
+  // Rotate placeholder every 4 seconds (extended for animation)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Auto-resize textarea based on content (up to 10 lines max)
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      const maxHeight = 280; // Approximately 10 lines
+      const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+      textarea.style.height = `${newHeight}px`;
+    }
+  }, [input]);
+
+  // Detect URLs in the input
+  const detectUrls = (text: string): string[] => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.match(urlRegex) || [];
+  };
+
+  const handleInputChange = (value: string) => {
+    setInput(value);
+    setValidationError(null);
+
+    const urls = detectUrls(value);
+
+    // Check if multiple URLs are present
+    if (urls.length > 1) {
+      setValidationError('Only one URL is allowed at a time');
+    }
+  };
 
   const handleSubmit = () => {
     if (isProcessing) return;
 
-    if (inputMode === 'text') {
-      if (articleText.trim()) {
-        onSubmit(articleText.trim(), false);
-      }
+    const trimmedInput = input.trim();
+    if (!trimmedInput) return;
+
+    const urls = detectUrls(trimmedInput);
+
+    // Validation: Check for multiple URLs
+    if (urls.length > 1) {
+      setValidationError('Only one URL is allowed at a time');
+      return;
+    }
+
+    // Determine if input is a URL or text
+    // If exactly one URL and the trimmed input is just that URL (or URL with minimal whitespace)
+    const isUrl = urls.length === 1 && trimmedInput.replace(/\s+/g, '') === urls[0].replace(/\s+/g, '');
+
+    if (isUrl) {
+      onSubmit(urls[0], true);
     } else {
-      if (articleUrl.trim()) {
-        onSubmit(articleUrl.trim(), true);
-      }
+      onSubmit(trimmedInput, false);
     }
   };
 
-  const isValid =
-    inputMode === 'text' ? articleText.trim().length > 0 : articleUrl.trim().length > 0;
+  const isValid = input.trim().length > 0 && !validationError;
 
   return (
-    <div className="w-full space-y-6 p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-      {/* Mode Selection */}
-      <div className="flex gap-2 border-b-2" style={{ borderColor: 'var(--border-color)' }}>
-        <button
-          onClick={() => setInputMode('text')}
-          className={`px-6 py-3 font-semibold transition-all duration-300 ${
-            inputMode === 'text'
-              ? 'border-b-2 -mb-[2px]'
-              : 'hover:opacity-80'
-          }`}
+    <div className="w-full p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+      {/* Input Area */}
+      <div className="relative border-2 rounded-xl" style={{
+        borderColor: validationError ? '#ff4444' : 'var(--border-color)',
+        backgroundColor: 'var(--background)',
+      }}>
+        <textarea
+          ref={textareaRef}
+          value={input}
+          onChange={(e) => handleInputChange(e.target.value)}
+          placeholder={placeholders[placeholderIndex]}
+          rows={1}
+          className="w-full p-5 rounded-xl focus:outline-none resize-none placeholder-fade scrollbar-thin"
           style={{
-            color: inputMode === 'text' ? 'var(--navbar-indicator)' : 'var(--navbar-white-icon)',
-            borderColor: inputMode === 'text' ? 'var(--navbar-indicator)' : 'transparent',
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: 'var(--foreground)',
+            minHeight: '56px',
+            maxHeight: '280px',
+            overflow: 'auto',
+            paddingRight: isValid || isProcessing ? '60px' : '20px',
+            paddingBottom: '20px',
           }}
           disabled={isProcessing}
-        >
-          📝 Article Text
-        </button>
-        <button
-          onClick={() => setInputMode('url')}
-          className={`px-6 py-3 font-semibold transition-all duration-300 ${
-            inputMode === 'url'
-              ? 'border-b-2 -mb-[2px]'
-              : 'hover:opacity-80'
-          }`}
-          style={{
-            color: inputMode === 'url' ? 'var(--navbar-indicator)' : 'var(--navbar-white-icon)',
-            borderColor: inputMode === 'url' ? 'var(--navbar-indicator)' : 'transparent',
-          }}
-          disabled={isProcessing}
-        >
-          🔗 Article URL
-        </button>
+        />
+
+        {/* Inline Submit Button - Bottom Right Inside Border */}
+        {isValid && !isProcessing && (
+          <button
+            onClick={handleSubmit}
+            className="absolute bottom-4 right-4 p-2.5 rounded-lg transition-all duration-300 hover:scale-110 z-10"
+            style={{
+              backgroundColor: 'var(--navbar-indicator)',
+              color: '#101010',
+              boxShadow: '0 2px 8px rgba(169, 255, 91, 0.4)',
+            }}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          </button>
+        )}
+
+        {/* Processing Indicator */}
+        {isProcessing && (
+          <div className="absolute bottom-4 right-4 p-2.5 z-10">
+            <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ color: 'var(--navbar-indicator)' }}>
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+        )}
       </div>
 
-      {/* Input Area */}
-      {inputMode === 'text' ? (
-        <textarea
-          value={articleText}
-          onChange={(e) => setArticleText(e.target.value)}
-          placeholder="Paste your article text here (minimum 130 words)..."
-          className="w-full h-64 p-5 border-2 rounded-xl focus:outline-none focus:ring-2 resize-none transition-all duration-300 scrollbar-thin"
-          style={{
-            backgroundColor: 'var(--background)',
-            borderColor: 'var(--border-color)',
-            color: 'var(--foreground)',
-          }}
-          disabled={isProcessing}
-        />
-      ) : (
-        <input
-          type="url"
-          value={articleUrl}
-          onChange={(e) => setArticleUrl(e.target.value)}
-          placeholder="https://example.com/article"
-          className="w-full p-5 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all duration-300"
-          style={{
-            backgroundColor: 'var(--background)',
-            borderColor: 'var(--border-color)',
-            color: 'var(--foreground)',
-          }}
-          disabled={isProcessing}
-        />
+      {/* Validation Error */}
+      {validationError && (
+        <p className="text-sm px-2 mt-2" style={{ color: '#ff6666' }}>
+          ⚠️ {validationError}
+        </p>
       )}
 
-      {/* Submit Button */}
-      <button
-        onClick={handleSubmit}
-        disabled={!isValid || isProcessing}
-        className="w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02]"
-        style={{
-          backgroundColor: isValid && !isProcessing ? 'var(--navbar-indicator)' : '#2a2a2a',
-          color: isValid && !isProcessing ? '#101010' : '#555',
-          cursor: !isValid || isProcessing ? 'not-allowed' : 'pointer',
-        }}
-      >
-        {isProcessing ? '⏳ Processing...' : '✨ Generate Summary'}
-      </button>
-
       {/* Info Text */}
-      <p className="text-sm text-center leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
-        Enter an article (min 130 words) or URL to generate a structured 4-sentence summary with Arabic translation
+      <p className="text-xs mt-3 text-center leading-relaxed" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
+        Paste an article (130+ words) or URL to generate an AI-powered summary with Arabic translation
       </p>
     </div>
   );

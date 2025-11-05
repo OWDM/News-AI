@@ -9,6 +9,16 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home');
   const pathname = usePathname();
 
+  // Set active section based on pathname when not on home page
+  useEffect(() => {
+    if (pathname === '/contact') {
+      setActiveSection('contact');
+    } else if (pathname === '/') {
+      // On home page, active section will be determined by IntersectionObserver
+      setActiveSection('home');
+    }
+  }, [pathname]);
+
   useEffect(() => {
     const nav = document.getElementById('main-nav');
     const maxScroll = 1000;
@@ -46,32 +56,41 @@ export default function Navbar() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Active section detection
-    const sections = document.querySelectorAll('section[id]');
-    const observerOptions = { threshold: 0.6 };
+    // Active section detection (only on home page)
+    if (pathname === '/') {
+      const sections = document.querySelectorAll('section[id]');
+      const observerOptions = { threshold: 0.6 };
 
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          if (id) {
-            setActiveSection(id);
+      const observerCallback = (entries: IntersectionObserverEntry[]) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            if (id) {
+              setActiveSection(id);
+            }
           }
-        }
-      });
-    };
+        });
+      };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-    sections.forEach((section) => observer.observe(section));
+      const observer = new IntersectionObserver(observerCallback, observerOptions);
+      sections.forEach((section) => observer.observe(section));
+
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+        }
+        observer.disconnect();
+      };
+    }
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
-      observer.disconnect();
     };
-  }, []);
+  }, [pathname]);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
