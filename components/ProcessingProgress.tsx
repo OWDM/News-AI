@@ -8,12 +8,10 @@ interface ProcessingProgressProps {
 export default function ProcessingProgress({ currentPhase, progress }: ProcessingProgressProps) {
   // Dynamic status messages based on progress
   const getStatusMessage = () => {
-    if (progress < 20) return 'Pondering, stand by...';
-    if (progress < 40) return 'Extracting key information...';
-    if (progress < 60) return 'Analyzing article structure...';
-    if (progress < 80) return 'Generating summary...';
-    if (progress < 95) return 'Almost there...';
-    return 'Finishing up...';
+    if (progress < 25) return 'Pondering, stand by...';
+    if (progress < 55) return 'Analyzing your article...';
+    if (progress < 85) return 'Crafting the summary...';
+    return 'Almost there...';
   };
 
   return (

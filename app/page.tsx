@@ -53,12 +53,15 @@ export default function Home() {
         setState((prev) => ({
           ...prev,
           currentPhase: 'Extracting article from URL...',
-          progress: 5,
+          progress: 3,
         }));
 
         // Smooth progress increments
-        await new Promise(resolve => setTimeout(resolve, 300));
-        setState((prev) => ({ ...prev, progress: 8 }));
+        await new Promise(resolve => setTimeout(resolve, 200));
+        setState((prev) => ({ ...prev, progress: 6 }));
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+        setState((prev) => ({ ...prev, progress: 9 }));
 
         const response = await fetch('/api/extract-content', {
           method: 'POST',
@@ -73,27 +76,36 @@ export default function Home() {
         }
 
         articleText = data.content;
+
+        setState((prev) => ({ ...prev, progress: 12 }));
+        await new Promise(resolve => setTimeout(resolve, 150));
       }
 
       setState((prev) => ({
         ...prev,
         article: articleText,
         currentPhase: 'Article loaded',
-        progress: 12,
+        progress: 15,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 200));
-      setState((prev) => ({ ...prev, progress: 15 }));
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 18 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 21 }));
 
       // Step 2: Extract key information (RAG with 3 parallel QA)
       setState((prev) => ({
         ...prev,
         currentPhase: 'Extracting key information...',
-        progress: 20,
+        progress: 24,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 400));
-      setState((prev) => ({ ...prev, progress: 25 }));
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 28 }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 32 }));
 
       const keyInfoResponse = await fetch('/api/extract-key-info', {
         method: 'POST',
@@ -112,21 +124,30 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         currentPhase: 'Key information extracted',
-        progress: 38,
+        progress: 36,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setState((prev) => ({ ...prev, progress: 42 }));
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 40 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 44 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 48 }));
 
       // Step 3: Generate summary
       setState((prev) => ({
         ...prev,
         currentPhase: 'Generating summary...',
-        progress: 48,
+        progress: 52,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 400));
-      setState((prev) => ({ ...prev, progress: 52 }));
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 56 }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 60 }));
 
       const summaryResponse = await fetch('/api/generate-summary', {
         method: 'POST',
@@ -146,21 +167,27 @@ export default function Home() {
         ...prev,
         summary,
         currentPhase: 'Summary generated',
-        progress: 62,
+        progress: 64,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setState((prev) => ({ ...prev, progress: 66 }));
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 68 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 72 }));
 
       // Step 4: Translate to Arabic
       setState((prev) => ({
         ...prev,
         currentPhase: 'Translating to Arabic...',
-        progress: 70,
+        progress: 76,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 400));
-      setState((prev) => ({ ...prev, progress: 74 }));
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 79 }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 82 }));
 
       const arabicResponse = await fetch('/api/translate-arabic', {
         method: 'POST',
@@ -180,21 +207,24 @@ export default function Home() {
         ...prev,
         arabicSummary,
         currentPhase: 'Translation complete',
-        progress: 82,
+        progress: 85,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setState((prev) => ({ ...prev, progress: 86 }));
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 88 }));
 
       // Step 5: Match sentences for highlighting
       setState((prev) => ({
         ...prev,
         currentPhase: 'Matching sentences for highlighting...',
-        progress: 90,
+        progress: 91,
       }));
 
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setState((prev) => ({ ...prev, progress: 94 }));
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 93 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 95 }));
 
       const matchResponse = await fetch('/api/match-sentences', {
         method: 'POST',
@@ -209,6 +239,12 @@ export default function Home() {
       }
 
       const matches: SentenceMatch[] = matchData.matches;
+
+      setState((prev) => ({ ...prev, progress: 97 }));
+      await new Promise(resolve => setTimeout(resolve, 150));
+
+      setState((prev) => ({ ...prev, progress: 99 }));
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       setState((prev) => ({
         ...prev,
@@ -258,7 +294,7 @@ export default function Home() {
       <section id="generator" className="min-h-screen pt-24 md:pt-32">
         <main className="px-8 py-16">
         {/* Input Section */}
-        {!processingComplete && (
+        {!processingComplete && !state.isProcessing && (
           <div className="max-w-4xl mx-auto mb-12 animate-fadeInUp">
             <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
           </div>
@@ -266,7 +302,7 @@ export default function Home() {
 
         {/* Processing Progress */}
         {state.isProcessing && (
-          <div className="max-w-4xl mx-auto mb-12 animate-scaleIn">
+          <div className="max-w-4xl mx-auto mb-12 animate-fadeInUp">
             <ProcessingProgress currentPhase={state.currentPhase} progress={state.progress} />
           </div>
         )}
@@ -283,7 +319,7 @@ export default function Home() {
         {processingComplete && state.summary && (
           <>
             {/* New Article Button */}
-            <div className="max-w-7xl mx-auto mb-8 text-center animate-fadeIn">
+            <div className="max-w-7xl mx-auto mb-8 flex justify-end px-8 animate-fadeIn">
               <button
                 onClick={() => {
                   setProcessingComplete(false);
@@ -300,10 +336,53 @@ export default function Home() {
                     matchedSentences: [],
                   });
                 }}
-                className="px-10 py-4 rounded-xl smooth-transition shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-base"
-                style={{ backgroundColor: 'var(--navbar-indicator)', color: '#101010' }}
+                className="group rounded-full pl-5 pr-1 py-1 flex items-center justify-between overflow-hidden relative"
+                style={{
+                  backgroundColor: 'var(--navbar-indicator)',
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--sec)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--navbar-indicator)'}
               >
-                Process New Article
+                {/* Button text */}
+                <span className="text-sm font-medium text-[#101010] transition-colors duration-300">
+                  New Article
+                </span>
+
+                {/* White circle with animated arrow */}
+                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 relative ml-3">
+                  {/* First arrow - moves up-right and fades out on hover */}
+                  <svg
+                    className="w-3.5 h-3.5 transition-all duration-200 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:opacity-0"
+                    style={{ color: '#101010' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17L17 7M17 7H7M17 7v10"
+                    />
+                  </svg>
+
+                  {/* Second arrow - positioned bottom-left, moves to center and fades in on hover */}
+                  <svg
+                    className="w-3.5 h-3.5 absolute transition-all duration-200 -translate-x-2 translate-y-2 opacity-0 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100"
+                    style={{ color: 'var(--sec)' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17L17 7M17 7H7M17 7v10"
+                    />
+                  </svg>
+                </div>
               </button>
             </div>
 
