@@ -31,12 +31,27 @@ export default function SummaryDisplay({
     }
   };
 
-  // Generate colors for highlighting (optimized for dark mode)
+  // Colors that match the interactive highlighter (from highlighter.tsx)
+  const highlightColors: string[] = [
+    "#7AB842", // Green (brand color)
+    "#B89B00", // Gold
+    "#B84D4D", // Coral Red
+    "#38948D", // Turquoise
+    "#6BA298", // Mint
+    "#B85045", // Salmon
+    "#4D43A7", // Purple
+    "#0097B8", // Bright Blue
+    "#B87702", // Orange
+    "#AF4BA1", // Pink
+    "#349EB2", // Sky Blue
+    "#1BA05D", // Emerald Green
+  ];
+
+  // Generate colors for highlighting using the highlighter color palette
   const generateColors = (count: number): string[] => {
     const colors: string[] = [];
     for (let i = 0; i < count; i++) {
-      const hue = (i * 360) / count;
-      colors.push(`hsl(${hue}, 65%, 40%)`);
+      colors.push(highlightColors[i % highlightColors.length]);
     }
     return colors;
   };

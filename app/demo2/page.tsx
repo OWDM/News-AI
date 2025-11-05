@@ -114,8 +114,8 @@ export default function Demo2() {
                 Current Settings
               </h3>
               <div className="text-sm space-y-1" style={{ color: 'var(--navbar-white-icon)', fontFamily: 'monospace' }}>
-                <div>action: "{action}"</div>
-                <div>color: "{color}"</div>
+                <div>action: &quot;{action}&quot;</div>
+                <div>color: &quot;{color}&quot;</div>
                 <div>strokeWidth: {strokeWidth}px (fixed)</div>
                 <div>animationDuration: {animationDuration}ms (fixed)</div>
                 <div>iterations: {iterations}</div>
