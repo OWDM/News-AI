@@ -28,19 +28,19 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Text */}
           <div>
-            <p className="text-sm font-medium mb-3" style={{ color: 'var(--navbar-indicator)' }}>
+            <p className="text-sm font-medium mb-3 animate-contact-label" style={{ color: 'var(--navbar-indicator)' }}>
               [Contact]
             </p>
-            <h2 className="text-5xl font-bold mb-4" style={{ color: 'var(--foreground)' }}>
+            <h2 className="text-5xl font-bold mb-4 animate-contact-heading" style={{ color: 'var(--foreground)' }}>
               Drop Me a Message
             </h2>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
+            <p className="text-sm leading-relaxed animate-contact-description" style={{ color: 'var(--navbar-white-icon)' }}>
               Have questions or feedback? I&apos;d love to hear from you. Fill out the form and I&apos;ll get back to you as soon as possible.
             </p>
           </div>
 
           {/* Right Side - Form */}
-          <div className="p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+          <div className="p-8 rounded-2xl shadow-lg animate-contact-form" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Input */}
               <div>

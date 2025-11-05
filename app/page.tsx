@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, Fragment } from 'react';
+import Link from 'next/link';
 import ArticleInput from '@/components/ArticleInput';
 import ProcessingProgress from '@/components/ProcessingProgress';
 import SummaryDisplay from '@/components/SummaryDisplay';
@@ -8,6 +9,7 @@ import ArticleDisplay from '@/components/ArticleDisplay';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Footer from '@/components/Footer';
 import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
+import { Highlighter } from '@/components/ui/highlighter';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
 
 export default function Home() {
@@ -274,17 +276,36 @@ export default function Home() {
         <header className="text-center">
           <div className="max-w-4xl mx-auto px-8">
             <div className="flex items-center justify-center gap-6 mb-6">
-              <img
-                src="/newsai-logo.png"
-                alt="News AI Logo"
-                className="w-24 h-24 md:w-32 md:h-32 object-contain"
-              />
-              <h1 className="text-7xl md:text-8xl tracking-tight" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
-                News AI
-              </h1>
+              <Link href="/" className="cursor-pointer">
+                <img
+                  src="/newsai-logo.png"
+                  alt="News AI Logo"
+                  className="w-24 h-24 md:w-32 md:h-32 object-contain animate-logo-entrance"
+                />
+              </Link>
+              <Link href="/" className="cursor-pointer">
+                <h1
+                  className="text-7xl md:text-8xl tracking-tight animate-text-reveal"
+                  style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}
+                >
+                  News AI
+                </h1>
+              </Link>
             </div>
-            <p className="text-xl md:text-2xl leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
-              Know exactly where your summary comes from—with interactive highlighting
+            <p className="text-xl md:text-2xl leading-relaxed animate-subtitle" style={{ color: 'var(--navbar-white-icon)' }}>
+              Know exactly where your summary comes from—with{' '}
+              <Highlighter
+                strokeWidth={2}
+                animationDuration={900}
+                iterations={Math.random() < 0.5 ? 1 : 2}
+                padding={6}
+                multiline={true}
+                isView={false}
+                delay={1800}
+                randomize={true}
+              >
+                interactive highlighting
+              </Highlighter>
             </p>
           </div>
         </header>

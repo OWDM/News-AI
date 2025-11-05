@@ -56,23 +56,26 @@ body {
     text-wrap: balance;
   }
 
-  /* Custom scrollbar styles */
+  /* Custom scrollbar styles - tiny and very light */
   .scrollbar-thin::-webkit-scrollbar {
-    width: 8px;
+    width: 2px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: var(--background);
-    border-radius: 4px;
+    background: transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #2a2a2a;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1px;
+  }
+
+  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #3a3a3a;
+    background: rgba(255, 255, 255, 0.2);
   }
 
   /* Hide scrollbar for textarea */
@@ -605,4 +608,79 @@ body {
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+}
+
+/* ==================== LANDING PAGE ANIMATIONS ==================== */
+
+/* Logo Entrance Animation - Scale and Fade In */
+@keyframes logoEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Text Reveal Animation - Fade In with Blur */
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subtitle Fade In */
+@keyframes subtitleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Utility Classes for Landing Page */
+.animate-logo-entrance {
+  opacity: 0;
+  animation: logoEntrance 0.8s ease-out 0.2s forwards;
+}
+
+.animate-text-reveal {
+  opacity: 0;
+  animation: textReveal 0.8s ease-out 0.4s forwards;
+}
+
+.animate-subtitle {
+  opacity: 0;
+  animation: subtitleFadeIn 0.8s ease-out 0.6s forwards;
+}
+
+/* Contact Page Animations - Staggered Entrance */
+.animate-contact-label {
+  opacity: 0;
+  animation: textReveal 0.8s ease-out 0.1s forwards;
+}
+
+.animate-contact-heading {
+  opacity: 0;
+  animation: textReveal 0.8s ease-out 0.2s forwards;
+}
+
+.animate-contact-description {
+  opacity: 0;
+  animation: subtitleFadeIn 0.8s ease-out 0.3s forwards;
+}
+
+.animate-contact-form {
+  opacity: 0;
+  animation: logoEntrance 0.8s ease-out 0.4s forwards;
 }

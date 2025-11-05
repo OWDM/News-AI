@@ -15,9 +15,9 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
 
   const placeholders = [
     'https://techcrunch.com/article-about-ai',
-    'Scientists at MIT have developed a new artificial intelligence system that can predict protein structures with unprecedented accuracy. The breakthrough could revolutionize drug discovery...',
+    'Scientists at MIT developed a new AI system that can predict protein structures...',
     'https://www.nature.com/articles/science-breakthrough',
-    'Researchers have discovered a novel quantum computing algorithm that promises to solve complex optimization problems exponentially faster than classical computers. The team demonstrated...',
+    'Researchers discovered a quantum algorithm for complex optimization...',
   ];
 
   // Rotate placeholder every 4 seconds (extended for animation)
@@ -88,8 +88,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
   return (
     <div className="w-full p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
       {/* Input Area */}
-      <div className="relative border-2 rounded-xl smooth-transition" style={{
-        borderColor: validationError ? '#ff4444' : 'var(--border-color)',
+      <div className="relative rounded-xl smooth-transition" style={{
         backgroundColor: 'var(--background)',
       }}>
         <textarea
@@ -98,10 +97,10 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={placeholders[placeholderIndex]}
           rows={1}
-          className="w-full p-5 rounded-xl focus:outline-none resize-none placeholder-fade scrollbar-thin"
+          className="w-full p-5 rounded-xl border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder-fade scrollbar-thin transition-all duration-300"
           style={{
-            backgroundColor: 'transparent',
-            border: 'none',
+            backgroundColor: 'var(--background)',
+            borderColor: validationError ? '#ff4444' : 'var(--border-color)',
             color: 'var(--foreground)',
             minHeight: '56px',
             maxHeight: '280px',
