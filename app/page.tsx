@@ -284,7 +284,7 @@ export default function Home() {
               </h1>
             </div>
             <p className="text-xl md:text-2xl leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
-              Transform technical articles into structured summaries with AI-powered translations
+              Know exactly where your summary comes from—with interactive highlighting
             </p>
           </div>
         </header>
@@ -407,7 +407,6 @@ export default function Home() {
                   }
                   setShowHighlighting(!showHighlighting);
                 }}
-                label="Show Highlighting"
               />
             </div>
 
