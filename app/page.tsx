@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import ArticleInput from '@/components/ArticleInput';
 import ProcessingProgress from '@/components/ProcessingProgress';
@@ -10,6 +10,8 @@ import ToggleSwitch from '@/components/ToggleSwitch';
 import Footer from '@/components/Footer';
 import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
 import { Highlighter } from '@/components/ui/highlighter';
+import { TextAnimate } from '@/registry/magicui/text-animate';
+import { motion } from 'framer-motion';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
 
 export default function Home() {
@@ -284,28 +286,48 @@ export default function Home() {
                 />
               </Link>
               <Link href="/" className="cursor-pointer">
-                <h1
-                  className="text-7xl md:text-8xl tracking-tight animate-text-reveal"
+                <TextAnimate
+                  animation="blurInUp"
+                  by="character"
+                  once
+                  as="h1"
+                  className="text-7xl md:text-8xl tracking-tight"
                   style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}
                 >
                   News AI
-                </h1>
+                </TextAnimate>
               </Link>
             </div>
-            <p className="text-xl md:text-2xl leading-relaxed animate-subtitle" style={{ color: 'var(--navbar-white-icon)' }}>
-              Know exactly where your summary comes from—with{' '}
-              <Highlighter
-                strokeWidth={2}
-                animationDuration={900}
-                iterations={Math.random() < 0.5 ? 1 : 2}
-                padding={6}
-                multiline={true}
-                isView={false}
-                delay={1800}
-                randomize={true}
+            <p className="text-xl md:text-2xl leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
+              <TextAnimate
+                animation="fadeIn"
+                by="word"
+                as="span"
+                delay={0.5}
+                staggerDelay={0.05}
               >
-                interactive highlighting
-              </Highlighter>
+                Know exactly where your summary comes from—with
+              </TextAnimate>
+              {' '}
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.5 }}
+                style={{ display: 'inline-block' }}
+              >
+                <Highlighter
+                  strokeWidth={2}
+                  animationDuration={900}
+                  iterations={Math.random() < 0.5 ? 1 : 2}
+                  padding={6}
+                  multiline={true}
+                  isView={false}
+                  delay={2300}
+                  randomize={true}
+                >
+                  interactive highlighting
+                </Highlighter>
+              </motion.span>
             </p>
           </div>
         </header>
