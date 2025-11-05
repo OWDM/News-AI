@@ -28,7 +28,7 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Text */}
           <div>
-            <p className="text-sm font-medium mb-3" style={{ color: 'var(--navbar-white-icon)' }}>
+            <p className="text-sm font-medium mb-3" style={{ color: 'var(--navbar-indicator)' }}>
               [Contact]
             </p>
             <h2 className="text-5xl font-bold mb-4" style={{ color: 'var(--foreground)' }}>

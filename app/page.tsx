@@ -224,7 +224,7 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
-      <section id="generator" className="min-h-screen">
+      <section id="generator" className="min-h-screen pt-24 md:pt-32">
         <main className="px-8 py-16">
         {/* Input Section */}
         {!processingComplete && (
