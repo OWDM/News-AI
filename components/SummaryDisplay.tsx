@@ -28,12 +28,12 @@ export default function SummaryDisplay({
     }
   };
 
-  // Generate colors for highlighting (HSV-based like Python version)
+  // Generate colors for highlighting (optimized for dark mode)
   const generateColors = (count: number): string[] => {
     const colors: string[] = [];
     for (let i = 0; i < count; i++) {
       const hue = (i * 360) / count;
-      colors.push(`hsl(${hue}, 70%, 80%)`);
+      colors.push(`hsl(${hue}, 65%, 40%)`);
     }
     return colors;
   };
@@ -59,11 +59,7 @@ export default function SummaryDisplay({
   return (
     <div className="w-full mb-8">
       <div className="max-w-7xl mx-auto p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
-            <span className="text-3xl">🇸🇦</span>
-            الملخص بالعربية
-          </h2>
+        <div className="flex justify-end mb-6">
           <button
             onClick={handleCopy}
             className="px-5 py-2.5 rounded-lg transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105"
@@ -72,7 +68,11 @@ export default function SummaryDisplay({
             {copySuccess ? '✓ تم النسخ' : 'نسخ النص'}
           </button>
         </div>
-        <div className="text-right leading-loose whitespace-pre-wrap text-lg" style={{ color: 'var(--foreground)' }}>
+        <div
+          className="leading-loose whitespace-pre-wrap text-lg"
+          dir="rtl"
+          style={{ color: 'var(--foreground)', textAlign: 'right' }}
+        >
           {arabicSummary}
         </div>
       </div>

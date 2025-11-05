@@ -1,7 +1,7 @@
 {
   "name": "newsai-nextjs",
   "version": "1.0.0",
-  "description": "NewsAI - AI-powered newsletter creation assistant (Next.js + LangChain.js)",
+  "description": "News AI - AI-powered newsletter creation assistant (Next.js + LangChain.js)",
   "private": true,
   "scripts": {
     "dev": "next dev",

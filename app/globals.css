@@ -1,5 +1,12 @@
 @import url('https://fonts.cdnfonts.com/css/montserrat');
 
+@font-face {
+  font-family: 'Bungee';
+  src: url('/Fonts_for_logo/Badeen_Display/Bungee/Bungee-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -117,6 +124,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 0.75rem;
+  position: relative;
 }
 
 .navbar-list {
@@ -176,6 +184,29 @@ body {
   background-color: var(--navbar-indicator);
 }
 
+/* Logo Item Animation */
+.navbar-logo-item {
+  animation: fadeIn 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-logo-item .navbar-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Scrolling State */
 .navbar.scrolling {
   background-color: var(--navbar-component-bg);
@@ -214,6 +245,13 @@ body {
     flex: none;
   }
 
+  .navbar-logo-item {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
   .navbar-link {
     font-size: 1rem;
     line-height: 1.5rem;
@@ -235,6 +273,13 @@ body {
   .navbar.scrolling {
     border-radius: 1rem 1rem 0 0;
     background-color: var(--navbar-component-bg);
+  }
+
+  .navbar-logo-item {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   body {
