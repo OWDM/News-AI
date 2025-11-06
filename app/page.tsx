@@ -31,6 +31,7 @@ export default function Home() {
   const [showHighlighting, setShowHighlighting] = useState(false);
   const [processingComplete, setProcessingComplete] = useState(false);
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
+  const [hasPlayedLandingAnimation, setHasPlayedLandingAnimation] = useState(false);
 
   const handleSubmit = async (content: string, isUrl: boolean) => {
     try {
@@ -49,6 +50,14 @@ export default function Home() {
       });
       setProcessingComplete(false);
       setHasShownHighlighting(false); // Reset for new article
+
+      // Smooth scroll to generator section
+      setTimeout(() => {
+        const generatorSection = document.getElementById('generator');
+        if (generatorSection) {
+          generatorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
 
       let articleText = content;
 
@@ -309,24 +318,29 @@ export default function Home() {
                 Know exactly where your summary comes from—with
               </TextAnimate>
               {' '}
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 1.0 }}
-              >
-                <Highlighter
-                  strokeWidth={2}
-                  animationDuration={900}
-                  iterations={Math.random() < 0.5 ? 1 : 2}
-                  padding={6}
-                  multiline={true}
-                  isView={false}
-                  delay={1800}
-                  randomize={true}
+              {!hasPlayedLandingAnimation ? (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 1.0 }}
+                  onAnimationComplete={() => setHasPlayedLandingAnimation(true)}
                 >
-                  interactive highlighting
-                </Highlighter>
-              </motion.span>
+                  <Highlighter
+                    strokeWidth={2}
+                    animationDuration={900}
+                    iterations={Math.random() < 0.5 ? 1 : 2}
+                    padding={6}
+                    multiline={true}
+                    isView={false}
+                    delay={1800}
+                    randomize={true}
+                  >
+                    interactive highlighting
+                  </Highlighter>
+                </motion.span>
+              ) : (
+                <span>interactive highlighting</span>
+              )}
             </p>
 
             {/* Input Section - Always visible on landing */}
@@ -344,8 +358,11 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
-      <section id="generator" className="min-h-screen pt-24 md:pt-32">
-        <main className="px-8 py-16">
+      <section
+        id="generator"
+        className={`pt-24 md:pt-32 ${state.isProcessing ? 'min-h-screen flex items-center' : ''}`}
+      >
+        <main className="px-8 py-8 w-full">
 
         {/* Processing Progress */}
         {state.isProcessing && (
@@ -370,6 +387,8 @@ export default function Home() {
               <button
                 onClick={() => {
                   setProcessingComplete(false);
+                  setShowHighlighting(false);
+                  setHasShownHighlighting(false);
                   setState({
                     isProcessing: false,
                     currentPhase: '',
@@ -382,6 +401,14 @@ export default function Home() {
                     highlightedSummary: '',
                     matchedSentences: [],
                   });
+
+                  // Smooth scroll back to home
+                  setTimeout(() => {
+                    const homeSection = document.getElementById('home');
+                    if (homeSection) {
+                      homeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 100);
                 }}
                 className="group rounded-full pl-5 pr-1 py-1 flex items-center justify-between overflow-hidden relative"
                 style={{

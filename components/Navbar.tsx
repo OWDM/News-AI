@@ -71,19 +71,28 @@ export default function Navbar() {
     if (pathname === '/') {
       const sections = document.querySelectorAll('section[id]');
       const observerOptions = {
-        threshold: [0.3, 0.5, 0.7],
-        rootMargin: '-20% 0px -35% 0px'
+        threshold: [0, 0.1, 0.3, 0.5],
+        rootMargin: '-10% 0px -70% 0px'
       };
 
       const observerCallback = (entries: IntersectionObserverEntry[]) => {
+        // Find the most visible section
+        let mostVisibleEntry: IntersectionObserverEntry | null = null;
+        let maxRatio = 0;
+
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
-            const id = entry.target.getAttribute('id');
-            if (id) {
-              setActiveSection(id);
-            }
+          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            mostVisibleEntry = entry;
           }
         });
+
+        if (mostVisibleEntry) {
+          const id = mostVisibleEntry.target.getAttribute('id');
+          if (id) {
+            setActiveSection(id);
+          }
+        }
       };
 
       observer = new IntersectionObserver(observerCallback, observerOptions);

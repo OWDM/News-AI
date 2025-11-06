@@ -123,7 +123,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
               minHeight: '56px',
               maxHeight: '280px',
               overflow: 'auto',
-              paddingRight: isValid || isProcessing ? '60px' : '20px',
+              paddingRight: isProcessing ? '20px' : '60px',
               paddingBottom: '20px',
               boxShadow: 'none',
               WebkitTapHighlightColor: 'transparent',
@@ -135,14 +135,16 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
           />
 
           {/* Inline Submit Button - Bottom Right Inside Border */}
-          {isValid && !isProcessing && (
+          {!isProcessing && (
             <button
               onClick={handleSubmit}
-              className="absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition hover:scale-110 animate-scaleIn"
+              disabled={!isValid}
+              className="absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition animate-scaleIn"
               style={{
-                backgroundColor: 'var(--navbar-indicator)',
-                color: '#101010',
-                boxShadow: '0 2px 8px rgba(169, 255, 91, 0.4)',
+                backgroundColor: isValid ? 'var(--navbar-indicator)' : '#2a2a2a',
+                color: isValid ? '#101010' : '#666666',
+                cursor: isValid ? 'pointer' : 'not-allowed',
+                opacity: isValid ? 1 : 0.5,
               }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
