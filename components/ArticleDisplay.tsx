@@ -9,6 +9,7 @@ interface ArticleDisplayProps {
   matches: SentenceMatch[];
   showHighlighting: boolean;
   isFirstTime?: boolean;
+  fontSize?: number;
 }
 
 export default function ArticleDisplay({
@@ -16,6 +17,7 @@ export default function ArticleDisplay({
   matches,
   showHighlighting,
   isFirstTime = false,
+  fontSize = 1,
 }: ArticleDisplayProps) {
   // Colors that match the interactive highlighter (from highlighter.tsx)
   const highlightColors: string[] = [
@@ -134,10 +136,10 @@ export default function ArticleDisplay({
 
           return (
             <>
-              <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
+              <div className="font-bold mb-6 smooth-transition" style={{ lineHeight: '1.4', fontSize: `${3 * fontSize}rem` }}>
                 {title}
               </div>
-              <div className="text-base">
+              <div className="smooth-transition" style={{ fontSize: `${1 * fontSize}rem` }}>
                 {renderHighlightedArticle(rest)}
               </div>
             </>

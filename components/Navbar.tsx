@@ -1,16 +1,45 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Navbar() {
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
   const pathname = usePathname();
+  const router = useRouter();
+
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  // Initialize active section based on pathname
+  const getInitialSection = () => {
+    if (pathname === '/contact') return 'contact';
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && ['home', 'generator', 'contact'].includes(hash)) return hash;
+    }
+    return 'home';
+  };
+
+  const [activeSection, setActiveSection] = useState(getInitialSection());
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const [enableTransitions, setEnableTransitions] = useState(false);
+
+  // Enable transitions after initial mount to prevent animation on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setEnableTransitions(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Set active section based on pathname and hash
   useEffect(() => {
+    // Only update if this is the initial mount or pathname changed
+    if (!hasInitialized) {
+      setHasInitialized(true);
+      return;
+    }
+
     if (pathname === '/contact') {
       setActiveSection('contact');
     } else if (pathname === '/') {
@@ -21,6 +50,30 @@ export default function Navbar() {
       } else {
         // Default to home if no hash
         setActiveSection('home');
+      }
+
+      // Check if we need to scroll to a specific section after page load
+      const scrollTo = localStorage.getItem('newsai-scroll-to');
+      if (scrollTo === 'generator') {
+        localStorage.removeItem('newsai-scroll-to');
+
+        // Wait for page to fully load and content to render
+        setTimeout(() => {
+          const generatorSection = document.getElementById('generator');
+          const hasContent = generatorSection?.querySelector('main')?.children.length || 0;
+
+          if (hasContent > 1) {
+            // Has content, scroll to it immediately without smooth behavior to avoid flash
+            generatorSection?.scrollIntoView({
+              behavior: 'instant',
+              block: 'start',
+            });
+            setActiveSection('generator');
+          } else {
+            // No content, stay on home
+            setActiveSection('home');
+          }
+        }, 50);
       }
     }
   }, [pathname]);
@@ -113,6 +166,29 @@ export default function Navbar() {
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
 
+    // Special handling for generator section
+    if (targetId === 'generator') {
+      // If coming from contact page, need to navigate first then check
+      if (pathname === '/contact') {
+        // Store flag before navigation
+        localStorage.setItem('newsai-scroll-to', 'generator');
+        // Use Next.js router for smooth transition
+        router.push('/');
+        return;
+      }
+
+      // Check if there's actually content in the generator section
+      const generatorSection = document.getElementById('generator');
+      const hasContent = generatorSection?.querySelector('main')?.children.length || 0;
+
+      // If no content (only 1 or 0 children - just the empty main tag), stay on home
+      if (hasContent <= 1) {
+        // Don't scroll, keep user on home
+        setActiveSection('home');
+        return;
+      }
+    }
+
     // Update active section immediately
     setActiveSection(targetId);
 
@@ -120,6 +196,7 @@ export default function Navbar() {
     if (targetElement) {
       targetElement.scrollIntoView({
         behavior: 'smooth',
+        block: 'start',
       });
     }
   };
@@ -128,7 +205,7 @@ export default function Navbar() {
     <div className="navbar-wrapper">
       <nav
         id="main-nav"
-        className={`navbar ${isScrolling ? 'scrolling' : ''}`}
+        className={`navbar ${isScrolling ? 'scrolling' : ''} ${!enableTransitions ? 'no-transition' : ''}`}
       >
         <div className="navbar-container">
           <ul className="navbar-list">
@@ -188,48 +265,26 @@ export default function Navbar() {
               )}
             </li>
             <li className="navbar-item">
-              {pathname === '/' ? (
-                <a
-                  href="#generator"
-                  onClick={(e) => handleLinkClick(e, 'generator')}
-                  className={`navbar-link ${activeSection === 'generator' ? 'active' : ''}`}
-                >
-                  <div className="nav-indicator hidden md:block"></div>
-                  <span className="md:hidden navbar-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      height="24"
-                      fill="currentColor"
-                    >
-                      <path d="M13 10H18L12 16V12H7L13 6V10ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"></path>
-                    </svg>
-                  </span>
-                  <span className="hidden md:inline-block">Generator</span>
-                  <span className="md:hidden navbar-label">Generator</span>
-                </a>
-              ) : (
-                <Link
-                  href="/#generator"
-                  className={`navbar-link ${activeSection === 'generator' ? 'active' : ''}`}
-                >
-                  <div className="nav-indicator hidden md:block"></div>
-                  <span className="md:hidden navbar-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      height="24"
-                      fill="currentColor"
-                    >
-                      <path d="M13 10H18L12 16V12H7L13 6V10ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"></path>
-                    </svg>
-                  </span>
-                  <span className="hidden md:inline-block">Generator</span>
-                  <span className="md:hidden navbar-label">Generator</span>
-                </Link>
-              )}
+              <a
+                href={pathname === '/' ? '#generator' : '/#generator'}
+                onClick={(e) => handleLinkClick(e, 'generator')}
+                className={`navbar-link ${activeSection === 'generator' ? 'active' : ''}`}
+              >
+                <div className="nav-indicator hidden md:block"></div>
+                <span className="md:hidden navbar-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                  >
+                    <path d="M13 10H18L12 16V12H7L13 6V10ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"></path>
+                  </svg>
+                </span>
+                <span className="hidden md:inline-block">Generator</span>
+                <span className="md:hidden navbar-label">Generator</span>
+              </a>
             </li>
             <li className="navbar-item">
               <Link

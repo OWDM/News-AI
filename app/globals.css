@@ -191,6 +191,11 @@ body {
   background-color: var(--navbar-indicator);
 }
 
+/* Disable transitions on initial load */
+.navbar.no-transition .nav-indicator {
+  transition: none !important;
+}
+
 /* Logo Item Animation */
 .navbar-logo-item {
   animation: fadeIn 0.3s ease-in-out;

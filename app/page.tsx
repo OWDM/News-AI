@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ArticleInput from '@/components/ArticleInput';
 import ProcessingProgress from '@/components/ProcessingProgress';
@@ -32,6 +32,60 @@ export default function Home() {
   const [processingComplete, setProcessingComplete] = useState(false);
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
   const [hasPlayedLandingHighlight, setHasPlayedLandingHighlight] = useState(false);
+  const [fontSize, setFontSize] = useState(1);
+
+  // Load saved data from localStorage on mount
+  useEffect(() => {
+    // Always scroll to top on page load
+    window.scrollTo(0, 0);
+
+    const savedData = localStorage.getItem('newsai-session');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setState(parsed.state);
+        setProcessingComplete(parsed.processingComplete);
+        setShowHighlighting(parsed.showHighlighting);
+        setHasShownHighlighting(parsed.hasShownHighlighting);
+        setFontSize(parsed.fontSize);
+      } catch (error) {
+        console.error('Error loading saved data:', error);
+      }
+    }
+  }, []);
+
+  // Save data to localStorage whenever relevant state changes
+  useEffect(() => {
+    if (processingComplete) {
+      const dataToSave = {
+        state,
+        processingComplete,
+        showHighlighting,
+        hasShownHighlighting,
+        fontSize,
+      };
+      localStorage.setItem('newsai-session', JSON.stringify(dataToSave));
+    }
+  }, [state, processingComplete, showHighlighting, hasShownHighlighting, fontSize]);
+
+  const handleArabicSummaryChange = (newSummary: string) => {
+    setState((prev) => ({
+      ...prev,
+      arabicSummary: newSummary,
+    }));
+  };
+
+  const increaseFontSize = () => {
+    setFontSize((prev) => Math.min(prev + 0.1, 1.5)); // Max 150%
+  };
+
+  const decreaseFontSize = () => {
+    setFontSize((prev) => Math.max(prev - 0.1, 0.8)); // Min 80%
+  };
+
+  const resetFontSize = () => {
+    setFontSize(1);
+  };
 
   const handleSubmit = async (content: string, isUrl: boolean) => {
     try {
@@ -405,6 +459,9 @@ export default function Home() {
                     matchedSentences: [],
                   });
 
+                  // Clear saved data from localStorage
+                  localStorage.removeItem('newsai-session');
+
                   // Smooth scroll back to home
                   setTimeout(() => {
                     const homeSection = document.getElementById('home');
@@ -471,6 +528,11 @@ export default function Home() {
                 matches={state.matchedSentences}
                 showHighlighting={showHighlighting}
                 isFirstTime={!hasShownHighlighting && showHighlighting}
+                onArabicSummaryChange={handleArabicSummaryChange}
+                fontSize={fontSize}
+                onIncreaseFontSize={increaseFontSize}
+                onDecreaseFontSize={decreaseFontSize}
+                onResetFontSize={resetFontSize}
               />
             </div>
 
@@ -496,6 +558,7 @@ export default function Home() {
                   matches={state.matchedSentences}
                   showHighlighting={showHighlighting}
                   isFirstTime={!hasShownHighlighting && showHighlighting}
+                  fontSize={fontSize}
                 />
               </div>
 
@@ -510,7 +573,7 @@ export default function Home() {
                     English Summary
                   </h2>
                   <div
-                    className="leading-relaxed whitespace-pre-wrap"
+                    className="leading-relaxed whitespace-pre-wrap smooth-transition"
                     style={{ color: 'var(--foreground)', lineHeight: '1.8' }}
                   >
                     {(() => {
@@ -601,10 +664,10 @@ export default function Home() {
                         const rest = lines.slice(1).join('\n');
                         return (
                           <>
-                            <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
+                            <div className="font-bold mb-6 smooth-transition" style={{ lineHeight: '1.4', fontSize: `${3 * fontSize}rem` }}>
                               {title}
                             </div>
-                            <div className="text-base">
+                            <div className="smooth-transition" style={{ fontSize: `${1 * fontSize}rem` }}>
                               {renderHighlightedText(rest)}
                             </div>
                           </>
