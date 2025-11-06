@@ -1,19 +1,29 @@
 'use client';
 
 import Link from 'next/link';
+import FooterCounter from './FooterCounter';
 
 export default function Footer() {
   return (
     <footer className="w-full py-8 mt-20" style={{ backgroundColor: 'var(--component-bg)', borderTop: '1px solid var(--border-color)' }}>
       <div className="max-w-7xl mx-auto px-8">
         <div className="flex flex-col gap-6">
-          {/* First line - News AI (left) and Social Icons (right) */}
+          {/* First line - Logo + News AI (left) and Social Icons (right) */}
           <div className="flex items-center justify-between pb-6 border-b" style={{ borderColor: 'var(--border-color)' }}>
-            <Link href="/" className="cursor-pointer">
-              <h2 className="text-5xl tracking-tight" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
-                News AI
-              </h2>
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link href="/" className="cursor-pointer">
+                <img
+                  src="/newsai-logo.png"
+                  alt="News AI Logo"
+                  className="w-16 h-16 object-contain"
+                />
+              </Link>
+              <Link href="/" className="cursor-pointer">
+                <h2 className="text-5xl tracking-tight" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
+                  News AI
+                </h2>
+              </Link>
+            </div>
 
             {/* Social Icons */}
             <div className="flex items-center gap-4">
@@ -58,15 +68,10 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Second line - Logo (left) and Page Links (right) */}
+          {/* Second line - Badge Counter and Page Links */}
           <div className="flex items-center justify-between">
-            <Link href="/" className="cursor-pointer">
-              <img
-                src="/newsai-logo.png"
-                alt="News AI Logo"
-                className="w-16 h-16 object-contain"
-              />
-            </Link>
+            {/* Badge Counter */}
+            <FooterCounter style="badge" />
 
             <div className="flex items-center gap-6">
               <a href="/#home" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }}>
