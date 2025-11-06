@@ -31,7 +31,7 @@ export default function Home() {
   const [showHighlighting, setShowHighlighting] = useState(false);
   const [processingComplete, setProcessingComplete] = useState(false);
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
-  const [hasPlayedLandingAnimation, setHasPlayedLandingAnimation] = useState(false);
+  const [hasPlayedLandingHighlight, setHasPlayedLandingHighlight] = useState(false);
 
   const handleSubmit = async (content: string, isUrl: boolean) => {
     try {
@@ -318,12 +318,15 @@ export default function Home() {
                 Know exactly where your summary comes from—with
               </TextAnimate>
               {' '}
-              {!hasPlayedLandingAnimation ? (
+              {!hasPlayedLandingHighlight ? (
                 <motion.span
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5, delay: 1.0 }}
-                  onAnimationComplete={() => setHasPlayedLandingAnimation(true)}
+                  onAnimationComplete={() => {
+                    // Set flag after 3 seconds (enough time for highlight to animate and erase)
+                    setTimeout(() => setHasPlayedLandingHighlight(true), 3000);
+                  }}
                 >
                   <Highlighter
                     strokeWidth={2}
@@ -339,7 +342,7 @@ export default function Home() {
                   </Highlighter>
                 </motion.span>
               ) : (
-                <span>interactive highlighting</span>
+                <span style={{ color: 'var(--navbar-white-icon)' }}>interactive highlighting</span>
               )}
             </p>
 
