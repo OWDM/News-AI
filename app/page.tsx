@@ -273,16 +273,16 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
-      {/* Header */}
+      {/* Header with Input */}
       <section id="home" className="min-h-screen flex flex-col justify-center">
-        <header className="text-center">
+        <div className="text-center">
           <div className="max-w-4xl mx-auto px-8">
-            <div className="flex items-center justify-center gap-6 mb-6">
+            <div className="flex items-center justify-center gap-4 mb-8">
               <Link href="/" className="cursor-pointer">
                 <img
                   src="/newsai-logo.png"
                   alt="News AI Logo"
-                  className="w-24 h-24 md:w-32 md:h-32 object-contain animate-logo-entrance"
+                  className="w-16 h-16 md:w-20 md:h-20 object-contain animate-logo-entrance"
                 />
               </Link>
               <Link href="/" className="cursor-pointer">
@@ -291,14 +291,14 @@ export default function Home() {
                   by="character"
                   once
                   as="h1"
-                  className="text-7xl md:text-8xl tracking-tight"
+                  className="text-5xl md:text-6xl tracking-tight"
                   style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}
                 >
                   News AI
                 </TextAnimate>
               </Link>
             </div>
-            <p className="text-xl md:text-2xl leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
+            <p className="text-lg md:text-xl leading-relaxed mb-12" style={{ color: 'var(--navbar-white-icon)' }}>
               <TextAnimate
                 animation="fadeIn"
                 by="word"
@@ -312,8 +312,7 @@ export default function Home() {
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 1.5 }}
-                style={{ display: 'inline-block' }}
+                transition={{ duration: 0.5, delay: 1.0 }}
               >
                 <Highlighter
                   strokeWidth={2}
@@ -322,26 +321,31 @@ export default function Home() {
                   padding={6}
                   multiline={true}
                   isView={false}
-                  delay={2300}
+                  delay={1800}
                   randomize={true}
                 >
                   interactive highlighting
                 </Highlighter>
               </motion.span>
             </p>
+
+            {/* Input Section - Always visible on landing */}
+            {!processingComplete && !state.isProcessing && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+              >
+                <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
+              </motion.div>
+            )}
           </div>
-        </header>
+        </div>
       </section>
 
       {/* Main Content */}
       <section id="generator" className="min-h-screen pt-24 md:pt-32">
         <main className="px-8 py-16">
-        {/* Input Section */}
-        {!processingComplete && !state.isProcessing && (
-          <div className="max-w-4xl mx-auto mb-12 animate-fadeInUp">
-            <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
-          </div>
-        )}
 
         {/* Processing Progress */}
         {state.isProcessing && (
