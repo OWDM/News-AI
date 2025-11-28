@@ -52,12 +52,12 @@ Your task is to write a concise, 4-sentence summary that captures the essence of
         'human',
         `Article: {article}
 
-Extracted Key Information from RAG:
-- What was developed and by whom: {answer1}
-- Technical functionality and measurable results: {answer2}
-- Future plans and applications: {answer3}
+Key Information:
+- Main technical concepts: {answer1}
+- Key findings/advancements: {answer2}
+- Potential impacts/applications: {answer3}
 
-Using the article and the extracted key information above, generate a structured 4-sentence summary following the exact format specified in the system instructions. Focus on accuracy, specific numbers, and technical precision.`,
+Generate the summary now.`,
       ],
     ]);
 
