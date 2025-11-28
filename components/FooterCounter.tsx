@@ -12,7 +12,6 @@ interface FooterCounterProps {
 export default function FooterCounter({ totalCount, style }: FooterCounterProps) {
   const [targetCount, setTargetCount] = useState(totalCount || 0);
   const [displayCount, setDisplayCount] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
   const [mounted, setMounted] = useState(false);
   const counterRef = useRef<HTMLDivElement>(null);
 
@@ -43,45 +42,30 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
     fetchCount();
   }, [totalCount]);
 
-  // Intersection observer to trigger animation when visible
+  // Animate count whenever targetCount changes
   useEffect(() => {
-    const currentRef = counterRef.current;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasAnimated) {
-            setHasAnimated(true);
-
-            // Start counting animation
-            let start = 0;
-            const duration = 2000;
-            const increment = targetCount / (duration / 16);
-
-            const timer = setInterval(() => {
-              start += increment;
-              if (start >= targetCount) {
-                setDisplayCount(targetCount);
-                clearInterval(timer);
-              } else {
-                setDisplayCount(Math.floor(start));
-              }
-            }, 16);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    if (currentRef) {
-      observer.observe(currentRef);
+    if (!mounted || targetCount === 0) {
+      setDisplayCount(0);
+      return;
     }
 
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+    // Start counting animation
+    let start = 0;
+    const duration = 2000;
+    const increment = targetCount / (duration / 16);
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= targetCount) {
+        setDisplayCount(targetCount);
+        clearInterval(timer);
+      } else {
+        setDisplayCount(Math.floor(start));
       }
-    };
-  }, [targetCount, hasAnimated]);
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [targetCount, mounted]);
 
   // Style 1: Inline Text - Just text, no container
   if (style === 'inline-text') {
