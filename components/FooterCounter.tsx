@@ -68,7 +68,7 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         <span style={{ color: 'var(--sec)', fontWeight: 600 }}>
           {displayCount.toLocaleString()}+
         </span>
-        {mounted && <>{' '}articles generated</>}
+        {mounted && <>{' '}summaries generated</>}
       </p>
     );
   }
@@ -89,7 +89,7 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         </span>
         {mounted && (
           <span className="text-xs" style={{ color: 'var(--navbar-white-icon)', opacity: 0.8 }}>
-            Articles Generated
+            Summaries Generated
           </span>
         )}
       </div>
@@ -105,7 +105,7 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         </span>
         {mounted && (
           <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
-            Articles Generated
+            Summaries Generated
           </span>
         )}
       </div>

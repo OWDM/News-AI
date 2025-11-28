@@ -130,10 +130,10 @@ export default function SummaryDisplay({
   };
 
   return (
-    <div className="w-full mb-12">
-      <div className="max-w-7xl mx-auto p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-        <div className="flex justify-between items-center mb-6 pb-4" style={{ borderBottom: '2px solid var(--border-color)' }}>
-          <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
+    <div className="w-full mb-8 sm:mb-10 md:mb-12">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+        <div className="flex justify-between items-center mb-4 sm:mb-6 pb-3 sm:pb-4" style={{ borderBottom: '2px solid var(--border-color)' }}>
+          <h2 className="text-[8px] sm:text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
             ARABIC SUMMARY
           </h2>
           <div className="flex gap-2">
@@ -228,7 +228,7 @@ export default function SummaryDisplay({
               color: 'var(--foreground)',
               textAlign: 'right',
               lineHeight: '2',
-              fontSize: `${textSize * 0.16}px`,
+              fontSize: `${textSize * 0.016}rem`,
               outline: 'none'
             }}
           />
