@@ -9,7 +9,6 @@ import ArticleDisplay from '@/components/ArticleDisplay';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Footer from '@/components/Footer';
 import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
-import { Highlighter } from '@/components/ui/highlighter';
 import { TextAnimate } from '@/registry/magicui/text-animate';
 import { motion } from 'framer-motion';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
@@ -31,7 +30,6 @@ export default function Home() {
   const [showHighlighting, setShowHighlighting] = useState(false);
   const [processingComplete, setProcessingComplete] = useState(false);
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
-  const [hasPlayedLandingHighlight, setHasPlayedLandingHighlight] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   // Prevent hydration mismatch by only enabling animations after mount
@@ -328,35 +326,8 @@ export default function Home() {
                   delay={0.5}
                   staggerDelay={0.05}
                 >
-                  Know exactly where your summary comes from—with
+                  Know exactly where your summary comes from—with interactive highlighting
                 </TextAnimate>
-                {' '}
-                {!hasPlayedLandingHighlight ? (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 1.0 }}
-                    onAnimationComplete={() => {
-                      // Set flag after 3 seconds (enough time for highlight to animate and erase)
-                      setTimeout(() => setHasPlayedLandingHighlight(true), 3000);
-                    }}
-                  >
-                    <Highlighter
-                      strokeWidth={2}
-                      animationDuration={900}
-                      iterations={Math.random() < 0.5 ? 1 : 2}
-                      padding={6}
-                      multiline={true}
-                      isView={false}
-                      delay={1800}
-                      randomize={true}
-                    >
-                      interactive highlighting
-                    </Highlighter>
-                  </motion.span>
-                ) : (
-                  <span style={{ color: 'var(--navbar-white-icon)' }}>interactive highlighting</span>
-                )}
               </p>
             )}
 
