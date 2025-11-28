@@ -33,6 +33,7 @@ export default function Home() {
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [textSize, setTextSize] = useState<number>(70);
+  const [articleId, setArticleId] = useState<number | undefined>(undefined);
 
   // Prevent hydration mismatch by only enabling animations after mount
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function Home() {
       });
       setProcessingComplete(false);
       setHasShownHighlighting(false); // Reset for new article
+      setArticleId(undefined); // Reset article ID
 
       // Smooth scroll to generator section
       setTimeout(() => {
@@ -274,6 +276,27 @@ export default function Home() {
       }));
 
       setProcessingComplete(true);
+
+      // Save article to database
+      try {
+        const saveResponse = await fetch('/api/save-article', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            original_article: articleText,
+            english_summary: summary,
+            arabic_summary: arabicSummary,
+          }),
+        });
+
+        const saveData = await saveResponse.json();
+        if (saveData.data && saveData.data.id) {
+          setArticleId(saveData.data.id);
+        }
+      } catch (error) {
+        console.error('Failed to save article to database:', error);
+        // Don't show error to user - this is just for tracking
+      }
     } catch (error: any) {
       console.error('Error processing article:', error);
       setState((prev) => ({
@@ -469,6 +492,7 @@ export default function Home() {
                 onArabicSummaryChange={(newSummary) => {
                   setState((prev) => ({ ...prev, arabicSummary: newSummary }));
                 }}
+                articleId={articleId}
               />
             </div>
 

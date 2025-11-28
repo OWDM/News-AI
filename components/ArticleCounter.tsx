@@ -3,13 +3,34 @@
 import { useEffect, useState } from 'react';
 
 interface ArticleCounterProps {
-  totalCount?: number; // Optional: for API integration later
+  totalCount?: number; // Optional: pass count directly
 }
 
 export default function ArticleCounter({ totalCount }: ArticleCounterProps) {
-  // Mock data for now - will be replaced with API call later
-  const targetCount = totalCount || 1247; // Starting placeholder number
+  const [targetCount, setTargetCount] = useState(totalCount || 0);
   const [displayCount, setDisplayCount] = useState(0);
+
+  // Fetch article count from API
+  useEffect(() => {
+    if (totalCount !== undefined) {
+      setTargetCount(totalCount);
+      return;
+    }
+
+    const fetchCount = async () => {
+      try {
+        const response = await fetch('/api/article-count');
+        const data = await response.json();
+        if (data.data && typeof data.data.count === 'number') {
+          setTargetCount(data.data.count);
+        }
+      } catch (error) {
+        console.error('Failed to fetch article count:', error);
+      }
+    };
+
+    fetchCount();
+  }, [totalCount]);
 
   // Counting animation on mount
   useEffect(() => {
