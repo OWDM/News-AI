@@ -13,7 +13,7 @@ export async function extractContentFromUrl(url: string): Promise<string> {
       throw new Error('EXTRACTOR_API_KEY is not configured in environment variables');
     }
 
-    // Call ExtractorAPI
+    // Call ExtractorAPI with JSON structure
     const response = await axios.get('https://extractorapi.com/api/v1/extractor/', {
       params: {
         apikey: extractorApiKey,
@@ -22,15 +22,25 @@ export async function extractContentFromUrl(url: string): Promise<string> {
       timeout: 30000, // 30 second timeout
     });
 
-    if (!response.data || !response.data.text) {
+    if (!response.data) {
       throw new Error('Failed to extract content from URL');
     }
 
-    // Clean the extracted content
-    const content = response.data.text;
-    const cleaned = await cleanContentWithLLM(content);
+    // Extract structured data from ExtractorAPI response
+    const { title, text, description } = response.data;
 
-    return cleaned;
+    if (!text || text.trim().length === 0) {
+      throw new Error('No article content found at URL');
+    }
+
+    // Build structured article with clear title separation
+    const structuredContent = await buildStructuredArticle({
+      title: title || '',
+      text: text,
+      description: description || '',
+    });
+
+    return structuredContent;
   } catch (error: any) {
     console.error('Error extracting content:', error);
     throw new Error(`Failed to extract content: ${error.message}`);
@@ -38,11 +48,16 @@ export async function extractContentFromUrl(url: string): Promise<string> {
 }
 
 /**
- * Clean extracted content using LLM
- * @param content - Raw content from extraction
- * @returns Cleaned content
+ * Build structured article from ExtractorAPI response
+ * Uses LLM to properly format title and body with clear separation
+ * @param data - Structured data from ExtractorAPI
+ * @returns Properly formatted article with title as first line
  */
-async function cleanContentWithLLM(content: string): Promise<string> {
+async function buildStructuredArticle(data: {
+  title: string;
+  text: string;
+  description: string;
+}): Promise<string> {
   try {
     const { ChatOpenAI } = await import('@langchain/openai');
 
@@ -52,28 +67,52 @@ async function cleanContentWithLLM(content: string): Promise<string> {
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
 
-    const prompt = `Clean the following article content by:
-1. Excluding all hyperlinks, URLs, and references
-2. Excluding any HTML tags, metadata, or formatting styles
-3. Maintaining the original paragraph structure
-4. Keeping only the main article text
-5. Removing advertisements, navigation elements, and headers/footers
-6. Preserving technical terms and numbers exactly as they appear
+    const prompt = `You are formatting a technical article for a newsletter system. Your task is to create a clean, structured article.
 
-Content:
-${content}
+**Input Data:**
+Title: ${data.title}
+Description: ${data.description}
+Article Text: ${data.text}
 
-Return only the cleaned article text with proper paragraph breaks.`;
+**Instructions:**
+1. Format the output with the TITLE as the very first line (standalone, not in a sentence)
+2. Add a blank line after the title
+3. Then include the cleaned article body with proper paragraph structure
+4. Remove all:
+   - Hyperlinks, URLs, and references
+   - HTML tags, metadata, formatting styles
+   - Advertisements, navigation elements, headers/footers
+   - Author bylines, publication dates, social media prompts
+   - "Read more", "Subscribe", "Share" buttons
+5. Preserve exactly:
+   - Technical terms and jargon
+   - Numbers, metrics, percentages
+   - Proper paragraph breaks
+   - Logical flow and structure
+
+**Format:**
+[TITLE]
+
+[Body paragraph 1]
+
+[Body paragraph 2]
+
+...
+
+Return only the formatted article - nothing else.`;
 
     const response = await llm.invoke(prompt);
     return response.content as string;
   } catch (error: any) {
-    console.error('Error cleaning content with LLM:', error);
-    // If LLM cleaning fails, return the original content with basic cleaning
-    return content
+    console.error('Error building structured article:', error);
+    // Fallback: basic cleaning with manual structure
+    const cleanedText = data.text
       .replace(/<[^>]*>/g, '') // Remove HTML tags
       .replace(/https?:\/\/[^\s]+/g, '') // Remove URLs
       .trim();
+
+    // Build structure manually if LLM fails
+    return data.title ? `${data.title}\n\n${cleanedText}` : cleanedText;
   }
 }
 
