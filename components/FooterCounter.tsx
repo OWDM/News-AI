@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export type FooterCounterStyle = 'inline-text' | 'badge' | 'stat-line' | 'minimal-icon';
 
@@ -11,7 +10,6 @@ interface FooterCounterProps {
 }
 
 export default function FooterCounter({ totalCount, style }: FooterCounterProps) {
-  const t = useTranslation();
   const targetCount = totalCount || 1247;
   const [displayCount, setDisplayCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -70,7 +68,7 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         <span style={{ color: 'var(--sec)', fontWeight: 600 }}>
           {displayCount.toLocaleString()}+
         </span>
-        {mounted && <>{' '}{t.footer.articlesGenerated.toLowerCase()}</>}
+        {mounted && <>{' '}articles generated</>}
       </p>
     );
   }
@@ -91,7 +89,7 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         </span>
         {mounted && (
           <span className="text-xs" style={{ color: 'var(--navbar-white-icon)', opacity: 0.8 }}>
-            {t.footer.articlesGenerated}
+            Articles Generated
           </span>
         )}
       </div>
@@ -107,7 +105,7 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         </span>
         {mounted && (
           <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
-            {t.footer.articlesGenerated}
+            Articles Generated
           </span>
         )}
       </div>

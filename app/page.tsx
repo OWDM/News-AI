@@ -13,10 +13,8 @@ import { Highlighter } from '@/components/ui/highlighter';
 import { TextAnimate } from '@/registry/magicui/text-animate';
 import { motion } from 'framer-motion';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
-import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export default function Home() {
-  const t = useTranslation();
   const [state, setState] = useState<ProcessingState>({
     isProcessing: false,
     currentPhase: '',
@@ -46,7 +44,7 @@ export default function Home() {
       // Reset state
       setState({
         isProcessing: true,
-        currentPhase: t.phases.initializing,
+        currentPhase: 'Initializing...',
         progress: 0,
         error: null,
         article: '',
@@ -73,7 +71,7 @@ export default function Home() {
       if (isUrl) {
         setState((prev) => ({
           ...prev,
-          currentPhase: t.phases.extractingUrl,
+          currentPhase: 'Extracting article from URL...',
           progress: 3,
         }));
 
@@ -105,7 +103,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         article: articleText,
-        currentPhase: t.phases.articleLoaded,
+        currentPhase: 'Article loaded',
         progress: 15,
       }));
 
@@ -118,7 +116,7 @@ export default function Home() {
       // Step 2: Extract key information (RAG with 3 parallel QA)
       setState((prev) => ({
         ...prev,
-        currentPhase: t.phases.extractingKeyInfo,
+        currentPhase: 'Extracting key information...',
         progress: 24,
       }));
 
@@ -144,7 +142,7 @@ export default function Home() {
 
       setState((prev) => ({
         ...prev,
-        currentPhase: t.phases.keyInfoExtracted,
+        currentPhase: 'Key information extracted',
         progress: 36,
       }));
 
@@ -160,7 +158,7 @@ export default function Home() {
       // Step 3: Generate summary
       setState((prev) => ({
         ...prev,
-        currentPhase: t.phases.generatingSummary,
+        currentPhase: 'Generating summary...',
         progress: 52,
       }));
 
@@ -187,7 +185,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         summary,
-        currentPhase: t.phases.summaryGenerated,
+        currentPhase: 'Summary generated',
         progress: 64,
       }));
 
@@ -200,7 +198,7 @@ export default function Home() {
       // Step 4: Translate to Arabic
       setState((prev) => ({
         ...prev,
-        currentPhase: t.phases.translatingArabic,
+        currentPhase: 'Translating to Arabic...',
         progress: 76,
       }));
 
@@ -227,7 +225,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         arabicSummary,
-        currentPhase: t.phases.translationComplete,
+        currentPhase: 'Translation complete',
         progress: 85,
       }));
 
@@ -237,7 +235,7 @@ export default function Home() {
       // Step 5: Match sentences for highlighting
       setState((prev) => ({
         ...prev,
-        currentPhase: t.phases.matchingSentences,
+        currentPhase: 'Matching sentences for highlighting...',
         progress: 91,
       }));
 
@@ -270,7 +268,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         matchedSentences: matches,
-        currentPhase: t.phases.complete,
+        currentPhase: 'Complete!',
         progress: 100,
         isProcessing: false,
       }));
@@ -282,7 +280,7 @@ export default function Home() {
         ...prev,
         isProcessing: false,
         error: error.message || 'An error occurred',
-        currentPhase: t.phases.error,
+        currentPhase: 'Error',
         progress: 0,
       }));
     }
@@ -330,7 +328,7 @@ export default function Home() {
                   delay={0.5}
                   staggerDelay={0.05}
                 >
-                  {t.page.tagline}
+                  Know exactly where your summary comes from—with
                 </TextAnimate>
                 {' '}
                 {!hasPlayedLandingHighlight ? (
@@ -353,11 +351,11 @@ export default function Home() {
                       delay={1800}
                       randomize={true}
                     >
-                      {t.page.interactiveHighlighting}
+                      interactive highlighting
                     </Highlighter>
                   </motion.span>
                 ) : (
-                  <span style={{ color: 'var(--navbar-white-icon)' }}>{t.page.interactiveHighlighting}</span>
+                  <span style={{ color: 'var(--navbar-white-icon)' }}>interactive highlighting</span>
                 )}
               </p>
             )}
@@ -393,7 +391,7 @@ export default function Home() {
         {/* Error Message */}
         {state.error && (
           <div className="max-w-4xl mx-auto mb-12 p-6 rounded-xl shadow-md animate-slideInDown" style={{ backgroundColor: 'var(--card-bg)', border: '2px solid #ff4444', color: '#ff6666' }}>
-            <p className="font-bold text-lg mb-2" suppressHydrationWarning>{t.page.error}</p>
+            <p className="font-bold text-lg mb-2">Error:</p>
             <p suppressHydrationWarning>{state.error}</p>
           </div>
         )}
@@ -438,8 +436,8 @@ export default function Home() {
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--navbar-indicator)'}
               >
                 {/* Button text */}
-                <span className="text-sm font-medium text-[#101010] transition-colors duration-300" suppressHydrationWarning>
-                  {t.page.newArticle}
+                <span className="text-sm font-medium text-[#101010] transition-colors duration-300">
+                  New Article
                 </span>
 
                 {/* White circle with animated arrow */}
@@ -523,7 +521,7 @@ export default function Home() {
                     opacity: 0.7,
                     borderBottom: '2px solid var(--border-color)'
                   }}>
-                    {t.summary.englishHeading}
+                    English Summary
                   </h2>
                   <div
                     className="leading-relaxed whitespace-pre-wrap"
