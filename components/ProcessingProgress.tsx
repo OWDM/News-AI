@@ -1,24 +1,28 @@
 'use client';
 
+import { useTranslation } from '@/lib/i18n/useTranslation';
+
 interface ProcessingProgressProps {
   currentPhase: string;
   progress: number;
 }
 
 export default function ProcessingProgress({ currentPhase, progress }: ProcessingProgressProps) {
+  const t = useTranslation();
+
   // Dynamic status messages based on progress
   const getStatusMessage = () => {
-    if (progress < 25) return 'Pondering, stand by...';
-    if (progress < 55) return 'Analyzing your article...';
-    if (progress < 85) return 'Crafting the summary...';
-    return 'Almost there...';
+    if (progress < 25) return t.progress.pondering;
+    if (progress < 55) return t.progress.analyzing;
+    if (progress < 85) return t.progress.crafting;
+    return t.progress.almostThere;
   };
 
   return (
     <div className="w-full space-y-4 p-6 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
       <div className="flex items-center gap-3">
         <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--navbar-indicator)' }} />
-        <p className="text-sm font-medium smooth-transition" style={{ color: 'var(--foreground)' }}>
+        <p className="text-sm font-medium smooth-transition" style={{ color: 'var(--foreground)' }} suppressHydrationWarning>
           {getStatusMessage()}
         </p>
       </div>
@@ -34,8 +38,8 @@ export default function ProcessingProgress({ currentPhase, progress }: Processin
         />
       </div>
 
-      <p className="text-xs text-center font-semibold smooth-transition" style={{ color: 'var(--navbar-white-icon)' }}>
-        {Math.round(progress)}% complete
+      <p className="text-xs text-center font-semibold smooth-transition" style={{ color: 'var(--navbar-white-icon)' }} suppressHydrationWarning>
+        {Math.round(progress)}{t.progress.complete}
       </p>
 
       <style jsx>{`

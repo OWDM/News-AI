@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslation } from '@/lib/i18n/useTranslation';
+
 interface ToggleSwitchProps {
   enabled: boolean;
   onToggle: () => void;
@@ -7,13 +9,15 @@ interface ToggleSwitchProps {
 }
 
 export default function ToggleSwitch({ enabled, onToggle, label }: ToggleSwitchProps) {
+  const t = useTranslation();
+
   return (
     <div className="inline-flex items-center gap-4 p-4 rounded-xl smooth-transition" style={{
       backgroundColor: 'var(--card-bg)',
       border: '2px solid var(--border-color)'
     }}>
-      <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
-        {enabled ? 'Hide Highlighting' : 'Show Highlighting'}
+      <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }} suppressHydrationWarning>
+        {enabled ? t.toggle.hide : t.toggle.show}
       </span>
       <button
         type="button"

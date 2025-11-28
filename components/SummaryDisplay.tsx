@@ -3,6 +3,7 @@
 import { SentenceMatch } from '@/types';
 import { useState, Fragment } from 'react';
 import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface SummaryDisplayProps {
   summary: string;
@@ -20,6 +21,7 @@ export default function SummaryDisplay({
   isFirstTime = false,
 }: SummaryDisplayProps) {
   const [copySuccess, setCopySuccess] = useState(false);
+  const t = useTranslation();
 
   const handleCopy = async () => {
     try {
@@ -116,7 +118,7 @@ export default function SummaryDisplay({
       <div className="max-w-7xl mx-auto p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
         <div className="flex justify-between items-center mb-6 pb-4" style={{ borderBottom: '2px solid var(--border-color)' }}>
           <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
-            Arabic Summary
+            {t.summary.arabicHeading}
           </h2>
           <button
             onClick={handleCopy}

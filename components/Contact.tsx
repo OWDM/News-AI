@@ -1,15 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MagicCard } from './MagicCard';
 import { TextAnimate } from '@/registry/magicui/text-animate';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export default function Contact() {
+  const t = useTranslation();
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: '',
   });
+
+  // Prevent hydration mismatch by only enabling animations after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,32 +38,36 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Text */}
           <div>
-            <TextAnimate
-              animation="blurInUp"
-              by="character"
-              duration={0.5}
-              className="text-sm font-medium mb-3"
-              style={{ color: 'var(--navbar-indicator)' }}
-            >
-              [Contact]
-            </TextAnimate>
-            <TextAnimate
-              animation="blurInUp"
-              by="character"
-              once
-              className="text-5xl font-bold mb-4"
-              style={{ color: 'var(--foreground)' }}
-            >
-              Drop Me a Message
-            </TextAnimate>
-            <TextAnimate
-              animation="blurIn"
-              as="p"
-              className="text-sm leading-relaxed"
-              style={{ color: 'var(--navbar-white-icon)' }}
-            >
-              Have questions or feedback? I&apos;d love to hear from you. Fill out the form and I&apos;ll get back to you as soon as possible.
-            </TextAnimate>
+            {mounted && (
+              <>
+                <TextAnimate
+                  animation="blurInUp"
+                  by="word"
+                  duration={0.5}
+                  className="text-sm font-medium mb-3"
+                  style={{ color: 'var(--navbar-indicator)' }}
+                >
+                  {t.contact.label}
+                </TextAnimate>
+                <TextAnimate
+                  animation="blurInUp"
+                  by="word"
+                  once
+                  className="text-5xl font-bold mb-4"
+                  style={{ color: 'var(--foreground)' }}
+                >
+                  {t.contact.heading}
+                </TextAnimate>
+                <TextAnimate
+                  animation="blurIn"
+                  as="p"
+                  className="text-sm leading-relaxed"
+                  style={{ color: 'var(--navbar-white-icon)' }}
+                >
+                  {t.contact.description}
+                </TextAnimate>
+              </>
+            )}
           </div>
 
           {/* Right Side - Form */}
@@ -72,8 +84,8 @@ export default function Contact() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Name Input */}
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }}>
-                      Name
+                    <label htmlFor="name" className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }} suppressHydrationWarning>
+                      {t.contact.nameLabel}
                     </label>
                     <input
                       type="text"
@@ -88,14 +100,14 @@ export default function Contact() {
                         borderColor: 'var(--border-color)',
                         color: 'var(--foreground)',
                       }}
-                      placeholder="Your name"
+                      placeholder={t.contact.namePlaceholder}
                     />
                   </div>
 
                   {/* Email Input */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }}>
-                      Email
+                    <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }} suppressHydrationWarning>
+                      {t.contact.emailLabel}
                     </label>
                     <input
                       type="email"
@@ -110,14 +122,14 @@ export default function Contact() {
                         borderColor: 'var(--border-color)',
                         color: 'var(--foreground)',
                       }}
-                      placeholder="your.email@example.com"
+                      placeholder={t.contact.emailPlaceholder}
                     />
                   </div>
 
                   {/* Message Input */}
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }}>
-                      Message
+                    <label htmlFor="message" className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }} suppressHydrationWarning>
+                      {t.contact.messageLabel}
                     </label>
                     <textarea
                       id="message"
@@ -132,14 +144,14 @@ export default function Contact() {
                         borderColor: 'var(--border-color)',
                         color: 'var(--foreground)',
                       }}
-                      placeholder="Your message..."
+                      placeholder={t.contact.messagePlaceholder}
                     />
                   </div>
 
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="group w-full rounded-full pl-6 pr-1 py-1 flex items-center justify-between relative isolate"
+                    className="contact-send-button group w-full rounded-full pl-6 pr-1 py-1 flex items-center justify-between relative isolate"
                     style={{
                       backgroundColor: 'var(--navbar-indicator)',
                       transition: 'all 0.3s ease',
@@ -153,12 +165,12 @@ export default function Contact() {
                     }}
                   >
                     {/* Button text */}
-                    <span className="text-base font-medium text-[#101010] transition-colors duration-300 pointer-events-none">
-                      Send Message
+                    <span className="text-base font-medium text-[#101010] transition-colors duration-300 pointer-events-none" suppressHydrationWarning>
+                      {t.contact.sendButton}
                     </span>
 
                     {/* White circle with animated arrow */}
-                    <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 relative ml-4 pointer-events-none">
+                    <div className="button-circle w-11 h-11 bg-white rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 relative ml-4 pointer-events-none">
                       {/* First arrow - moves up-right and fades out on hover */}
                       <svg
                         className="w-4 h-4 transition-all duration-200 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:opacity-0"
