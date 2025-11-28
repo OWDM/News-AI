@@ -35,6 +35,10 @@
   --navbar-indicator: #A9FF5B;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
@@ -52,23 +56,26 @@ body {
     text-wrap: balance;
   }
 
-  /* Custom scrollbar styles */
+  /* Custom scrollbar styles - tiny and very light */
   .scrollbar-thin::-webkit-scrollbar {
-    width: 8px;
+    width: 2px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: var(--background);
-    border-radius: 4px;
+    background: transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #2a2a2a;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1px;
+  }
+
+  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #3a3a3a;
+    background: rgba(255, 255, 255, 0.2);
   }
 
   /* Hide scrollbar for textarea */
@@ -95,31 +102,6 @@ body {
     box-shadow: 0 0 0 100px var(--background) inset !important;
     caret-color: var(--foreground);
   }
-}
-
-/* Highlight Animation */
-@keyframes highlight-fade-in {
-  0% {
-    background-color: transparent;
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.highlight-animate {
-  animation: highlight-fade-in 0.6s ease-out;
-  transition: all 0.3s ease;
-  display: inline;
-}
-
-.highlight-animate:hover {
-  filter: brightness(0.9);
-  transform: scale(1.01);
 }
 
 /* Navbar Styles */
@@ -312,6 +294,113 @@ body {
   }
 }
 
+/* ==================== RTL SUPPORT ==================== */
+
+/* RTL Direction Support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* RTL Navbar Adjustments */
+[dir="rtl"] .nav-indicator {
+  left: auto;
+  right: -1.5rem;
+}
+
+[dir="rtl"] .navbar-logo-item {
+  left: auto;
+  right: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  [dir="rtl"] .navbar-logo-item {
+    left: auto;
+    right: 1rem;
+  }
+}
+
+/* Keep brand names LTR even in RTL mode */
+.footer-logo-text,
+.navbar-brand {
+  direction: ltr !important;
+  unicode-bidi: bidi-override;
+}
+
+/* RTL Footer Adjustments */
+[dir="rtl"] .footer-section {
+  text-align: right;
+}
+
+/* RTL Language Toggle */
+.language-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.language-text {
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Montserrat', -apple-system, system-ui, sans-serif;
+}
+
+/* RTL Form Adjustments */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+[dir="rtl"] input::placeholder,
+[dir="rtl"] textarea::placeholder {
+  text-align: right;
+}
+
+[dir="rtl"] label {
+  text-align: right;
+}
+
+/* RTL Submit Button Position */
+[dir="rtl"] .article-submit-button {
+  right: auto !important;
+  left: 1rem !important;
+}
+
+/* RTL Contact Button Circle Position */
+[dir="rtl"] .contact-send-button .button-circle {
+  margin-left: 0 !important;
+  margin-right: 1rem !important;
+}
+
+/* RTL Flexbox Reversals */
+[dir="rtl"] .flex-reverse-rtl {
+  flex-direction: row-reverse;
+}
+
+/* RTL Text Alignment */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* RTL Margin/Padding Adjustments */
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
 /* ==================== COMPONENT STYLES ==================== */
 
 /* Standard Button/Card Component */
@@ -493,4 +582,245 @@ body {
   opacity: 0.25;
   animation: none;
   transform: none;
+}
+
+/* ==================== SMOOTH TRANSITIONS ==================== */
+
+/* Fade In Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Slide In Animations */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale In Animation */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Utility Classes for Animations */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-slideInDown {
+  animation: slideInDown 0.5s ease-out forwards;
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.5s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+/* Delayed animations */
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-300 {
+  animation-delay: 0.3s;
+}
+
+/* Smooth transition class */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.smooth-transition-slow {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mount/Unmount transitions for conditional rendering */
+.mount-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.mount-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.mount-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mount-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+}
+
+/* ==================== LANDING PAGE ANIMATIONS ==================== */
+
+/* Logo Entrance Animation - Scale and Fade In */
+@keyframes logoEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Text Reveal Animation - Fade In with Blur */
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subtitle Fade In */
+@keyframes subtitleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Utility Classes for Landing Page */
+.animate-logo-entrance {
+  opacity: 0;
+  animation: logoEntrance 0.8s ease-out 0.2s forwards;
+}
+
+.animate-text-reveal {
+  opacity: 0;
+  animation: textReveal 0.8s ease-out 0.4s forwards;
+}
+
+.animate-subtitle {
+  opacity: 0;
+  animation: subtitleFadeIn 0.8s ease-out 0.6s forwards;
+}
+
+/* Contact Page Animations - Staggered Entrance */
+.animate-contact-label {
+  opacity: 0;
+  animation: textReveal 0.8s ease-out 0.1s forwards;
+}
+
+.animate-contact-heading {
+  opacity: 0;
+  animation: textReveal 0.8s ease-out 0.2s forwards;
+}
+
+.animate-contact-description {
+  opacity: 0;
+  animation: subtitleFadeIn 0.8s ease-out 0.3s forwards;
+}
+
+.animate-contact-form {
+  opacity: 0;
+  animation: logoEntrance 0.8s ease-out 0.4s forwards;
+}
+
+/* ==================== SHINE BORDER ANIMATION ==================== */
+
+@keyframes shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  to {
+    background-position: 0% 0%;
+  }
+}
+
+.animate-shine {
+  animation: shine 14s infinite linear;
+}
+
+/* Shine border utility - applies animated gradient border */
+.shine-border {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(transparent, transparent, var(--shine-color-1, #a476ff), var(--shine-color-2, #A9FF5B), transparent, transparent);
+  background-size: 300% 300%;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  border-radius: inherit;
+  will-change: background-position;
 }
