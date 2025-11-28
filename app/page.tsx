@@ -647,7 +647,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <Footer />
+      <Footer key={articleId} />
     </div>
   );
 }
