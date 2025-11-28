@@ -1,21 +1,17 @@
 'use client';
 
-import { useTranslation } from '@/lib/i18n/useTranslation';
-
 interface ProcessingProgressProps {
   currentPhase: string;
   progress: number;
 }
 
 export default function ProcessingProgress({ currentPhase, progress }: ProcessingProgressProps) {
-  const t = useTranslation();
-
   // Dynamic status messages based on progress
   const getStatusMessage = () => {
-    if (progress < 25) return t.progress.pondering;
-    if (progress < 55) return t.progress.analyzing;
-    if (progress < 85) return t.progress.crafting;
-    return t.progress.almostThere;
+    if (progress < 25) return 'Pondering, stand by...';
+    if (progress < 55) return 'Analyzing your article...';
+    if (progress < 85) return 'Crafting the summary...';
+    return 'Almost there...';
   };
 
   return (
@@ -38,8 +34,8 @@ export default function ProcessingProgress({ currentPhase, progress }: Processin
         />
       </div>
 
-      <p className="text-xs text-center font-semibold smooth-transition" style={{ color: 'var(--navbar-white-icon)' }} suppressHydrationWarning>
-        {Math.round(progress)}{t.progress.complete}
+      <p className="text-xs text-center font-semibold smooth-transition" style={{ color: 'var(--navbar-white-icon)' }}>
+        {Math.round(progress)}% complete
       </p>
 
       <style jsx>{`

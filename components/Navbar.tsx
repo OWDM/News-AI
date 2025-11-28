@@ -3,21 +3,11 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { useTranslation } from '@/lib/i18n/useTranslation';
-import { useLanguageContext } from '@/lib/i18n/LanguageContext';
 
 export default function Navbar() {
   const [isScrolling, setIsScrolling] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const t = useTranslation();
-  const { language, toggleLanguage } = useLanguageContext();
-
-  // Mark as mounted to prevent hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Set active section based on pathname and hash
   useEffect(() => {
@@ -87,21 +77,16 @@ export default function Navbar() {
 
       const observerCallback = (entries: IntersectionObserverEntry[]) => {
         // Find the most visible section
-        let mostVisibleEntry: IntersectionObserverEntry | null = null;
-        let maxRatio = 0;
+        const visibleEntries = entries.filter(entry => entry.isIntersecting);
+        if (visibleEntries.length === 0) return;
 
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-            maxRatio = entry.intersectionRatio;
-            mostVisibleEntry = entry;
-          }
-        });
+        const topEntry = visibleEntries.reduce((max, entry) =>
+          entry.intersectionRatio > max.intersectionRatio ? entry : max
+        );
 
-        if (mostVisibleEntry) {
-          const id = mostVisibleEntry.target.getAttribute('id');
-          if (id) {
-            setActiveSection(id);
-          }
+        const id = (topEntry.target as Element).getAttribute('id');
+        if (id) {
+          setActiveSection(id);
         }
       };
 
@@ -172,8 +157,8 @@ export default function Navbar() {
                       <path d="M21 20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9.48907C3 9.18048 3.14247 8.88917 3.38606 8.69972L11.3861 2.47749C11.7472 2.19663 12.2528 2.19663 12.6139 2.47749L20.6139 8.69972C20.8575 8.88917 21 9.18048 21 9.48907V20ZM19 19V9.97815L12 4.53371L5 9.97815V19H19Z"></path>
                     </svg>
                   </span>
-                  <span className="hidden md:inline-block" suppressHydrationWarning>{t.nav.home}</span>
-                  <span className="md:hidden navbar-label" suppressHydrationWarning>{t.nav.home}</span>
+                  <span className="hidden md:inline-block">Home</span>
+                  <span className="md:hidden navbar-label">Home</span>
                 </a>
               ) : (
                 <Link
@@ -192,8 +177,8 @@ export default function Navbar() {
                       <path d="M21 20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9.48907C3 9.18048 3.14247 8.88917 3.38606 8.69972L11.3861 2.47749C11.7472 2.19663 12.2528 2.19663 12.6139 2.47749L20.6139 8.69972C20.8575 8.88917 21 9.18048 21 9.48907V20ZM19 19V9.97815L12 4.53371L5 9.97815V19H19Z"></path>
                     </svg>
                   </span>
-                  <span className="hidden md:inline-block" suppressHydrationWarning>{t.nav.home}</span>
-                  <span className="md:hidden navbar-label" suppressHydrationWarning>{t.nav.home}</span>
+                  <span className="hidden md:inline-block">Home</span>
+                  <span className="md:hidden navbar-label">Home</span>
                 </Link>
               )}
             </li>
@@ -216,8 +201,8 @@ export default function Navbar() {
                       <path d="M13 10H18L12 16V12H7L13 6V10ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"></path>
                     </svg>
                   </span>
-                  <span className="hidden md:inline-block" suppressHydrationWarning>{t.nav.generator}</span>
-                  <span className="md:hidden navbar-label" suppressHydrationWarning>{t.nav.generator}</span>
+                  <span className="hidden md:inline-block">Generator</span>
+                  <span className="md:hidden navbar-label">Generator</span>
                 </a>
               ) : (
                 <Link
@@ -236,8 +221,8 @@ export default function Navbar() {
                       <path d="M13 10H18L12 16V12H7L13 6V10ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"></path>
                     </svg>
                   </span>
-                  <span className="hidden md:inline-block" suppressHydrationWarning>{t.nav.generator}</span>
-                  <span className="md:hidden navbar-label" suppressHydrationWarning>{t.nav.generator}</span>
+                  <span className="hidden md:inline-block">Generator</span>
+                  <span className="md:hidden navbar-label">Generator</span>
                 </Link>
               )}
             </li>
@@ -258,29 +243,9 @@ export default function Navbar() {
                     <path d="M21.7267 2.95694L16.2734 22.0432C16.1225 22.5716 15.7979 22.5956 15.5563 22.1126L11 13L1.9229 9.36919C1.41322 9.16532 1.41953 8.86022 1.95695 8.68108L21.0432 2.31901C21.5716 2.14285 21.8747 2.43866 21.7267 2.95694ZM19.0353 5.09647L6.81221 9.17085L12.4488 11.4255L15.4895 17.5068L19.0353 5.09647Z"></path>
                   </svg>
                 </span>
-                <span className="hidden md:inline-block" suppressHydrationWarning>{t.nav.contact}</span>
-                <span className="md:hidden navbar-label" suppressHydrationWarning>{t.nav.contact}</span>
+                <span className="hidden md:inline-block">Contact</span>
+                <span className="md:hidden navbar-label">Contact</span>
               </Link>
-            </li>
-            <li className="navbar-item">
-              <button
-                onClick={toggleLanguage}
-                className="navbar-link language-toggle"
-                aria-label="Toggle Language"
-              >
-                <div className="nav-indicator hidden md:block"></div>
-                <span className="navbar-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM9.5 11C10.8807 11 12 9.88071 12 8.5C12 7.11929 10.8807 6 9.5 6C8.11929 6 7 7.11929 7 8.5C7 9.88071 8.11929 11 9.5 11ZM16 17.5C16 14.4624 13.5376 12 10.5 12C7.46243 12 5 14.4624 5 17.5V19H16V17.5ZM16 8C16 6.34315 17.3431 5 19 5V7C18.4477 7 18 7.44772 18 8V10H20V12H14V10H16V8Z"></path>
-                  </svg>
-                </span>
-              </button>
             </li>
           </ul>
         </div>

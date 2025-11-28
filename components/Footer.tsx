@@ -2,10 +2,8 @@
 
 import Link from 'next/link';
 import FooterCounter from './FooterCounter';
-import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export default function Footer() {
-  const t = useTranslation();
   return (
     <footer className="w-full py-8 mt-20" style={{ backgroundColor: 'var(--component-bg)', borderTop: '1px solid var(--border-color)' }}>
       <div className="max-w-7xl mx-auto px-8">
@@ -76,16 +74,16 @@ export default function Footer() {
             <FooterCounter style="badge" />
 
             <div className="flex items-center gap-6">
-              <a href="/#home" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }} suppressHydrationWarning>
-                {t.footer.home}
+              <a href="/#home" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }}>
+                Home
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300" style={{ backgroundColor: 'var(--navbar-indicator)' }}></span>
               </a>
-              <a href="/#generator" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }} suppressHydrationWarning>
-                {t.footer.generator}
+              <a href="/#generator" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }}>
+                Generator
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300" style={{ backgroundColor: 'var(--navbar-indicator)' }}></span>
               </a>
-              <a href="/contact" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }} suppressHydrationWarning>
-                {t.footer.contact}
+              <a href="/contact" className="text-sm transition-all relative group" style={{ color: 'var(--navbar-white-icon)' }}>
+                Contact
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300" style={{ backgroundColor: 'var(--navbar-indicator)' }}></span>
               </a>
             </div>
@@ -93,11 +91,11 @@ export default function Footer() {
 
           {/* Third line - Centered text */}
           <div className="flex flex-col items-center gap-2 pt-4">
-            <p className="text-sm" style={{ color: 'var(--navbar-white-icon)' }} suppressHydrationWarning>
-              {t.footer.developedBy}
+            <p className="text-sm" style={{ color: 'var(--navbar-white-icon)' }}>
+              Developed by Musaed
             </p>
-            <p className="text-xs" style={{ color: '#555', fontFamily: 'Bungee, sans-serif' }} suppressHydrationWarning>
-              {t.footer.copyright}
+            <p className="text-xs" style={{ color: '#555', fontFamily: 'Bungee, sans-serif' }}>
+              2024 News AI
             </p>
           </div>
         </div>

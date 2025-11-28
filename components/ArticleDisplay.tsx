@@ -3,7 +3,6 @@
 import { SentenceMatch } from '@/types';
 import { Fragment } from 'react';
 import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
-import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface ArticleDisplayProps {
   article: string;
@@ -18,7 +17,6 @@ export default function ArticleDisplay({
   showHighlighting,
   isFirstTime = false,
 }: ArticleDisplayProps) {
-  const t = useTranslation();
 
   // Colors that match the interactive highlighter (from highlighter.tsx)
   const highlightColors: string[] = [
@@ -122,7 +120,7 @@ export default function ArticleDisplay({
         opacity: 0.7,
         borderBottom: '2px solid var(--border-color)'
       }}>
-        {t.article.originalHeading}
+        ORIGINAL ARTICLE
       </h2>
       <div
         className="leading-relaxed whitespace-pre-wrap max-h-[600px] overflow-y-auto pr-4 scrollbar-thin text-base"

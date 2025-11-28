@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
-import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 
 export const metadata: Metadata = {
   title: 'News AI - AI-Powered Newsletter Assistant',
@@ -19,10 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased min-h-screen" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }} suppressHydrationWarning>
-        <LanguageProvider>
-          <Navbar />
-          {children}
-        </LanguageProvider>
+        <Navbar />
+        {children}
       </body>
     </html>
   );

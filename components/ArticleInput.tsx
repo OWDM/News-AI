@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface ArticleInputProps {
   onSubmit: (content: string, isUrl: boolean) => void;
@@ -13,13 +12,12 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
   const [validationError, setValidationError] = useState<string | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const t = useTranslation();
 
   const placeholders = [
-    t.input.placeholder1,
-    t.input.placeholder2,
-    t.input.placeholder3,
-    t.input.placeholder4,
+    'https://techcrunch.com/article-about-ai',
+    'Scientists at MIT developed a new AI system that can predict protein structures...',
+    'https://www.nature.com/articles/science-breakthrough',
+    'Researchers discovered a quantum algorithm for complex optimization...',
   ];
 
   // Rotate placeholder every 4 seconds (extended for animation)
@@ -56,7 +54,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
 
     // Check if multiple URLs are present
     if (urls.length > 1) {
-      setValidationError(t.input.validationError);
+      setValidationError('Only one URL is allowed at a time');
     }
   };
 
@@ -70,7 +68,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
 
     // Validation: Check for multiple URLs
     if (urls.length > 1) {
-      setValidationError(t.input.validationError);
+      setValidationError('Only one URL is allowed at a time');
       return;
     }
 
@@ -165,8 +163,8 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
       )}
 
       {/* Info Text */}
-      <p className="text-xs mt-3 text-center leading-relaxed" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }} suppressHydrationWarning>
-        {t.input.infoText}
+      <p className="text-xs mt-3 text-center leading-relaxed" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
+        Paste an article (130+ words) or URL to generate an AI-powered summary with Arabic translation
       </p>
     </div>
   );
