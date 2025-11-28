@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ArticleInput from '@/components/ArticleInput';
 import ProcessingProgress from '@/components/ProcessingProgress';
@@ -13,8 +13,10 @@ import { Highlighter } from '@/components/ui/highlighter';
 import { TextAnimate } from '@/registry/magicui/text-animate';
 import { motion } from 'framer-motion';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export default function Home() {
+  const t = useTranslation();
   const [state, setState] = useState<ProcessingState>({
     isProcessing: false,
     currentPhase: '',
@@ -32,13 +34,19 @@ export default function Home() {
   const [processingComplete, setProcessingComplete] = useState(false);
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
   const [hasPlayedLandingHighlight, setHasPlayedLandingHighlight] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only enabling animations after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (content: string, isUrl: boolean) => {
     try {
       // Reset state
       setState({
         isProcessing: true,
-        currentPhase: 'Initializing...',
+        currentPhase: t.phases.initializing,
         progress: 0,
         error: null,
         article: '',
@@ -65,7 +73,7 @@ export default function Home() {
       if (isUrl) {
         setState((prev) => ({
           ...prev,
-          currentPhase: 'Extracting article from URL...',
+          currentPhase: t.phases.extractingUrl,
           progress: 3,
         }));
 
@@ -97,7 +105,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         article: articleText,
-        currentPhase: 'Article loaded',
+        currentPhase: t.phases.articleLoaded,
         progress: 15,
       }));
 
@@ -110,7 +118,7 @@ export default function Home() {
       // Step 2: Extract key information (RAG with 3 parallel QA)
       setState((prev) => ({
         ...prev,
-        currentPhase: 'Extracting key information...',
+        currentPhase: t.phases.extractingKeyInfo,
         progress: 24,
       }));
 
@@ -136,7 +144,7 @@ export default function Home() {
 
       setState((prev) => ({
         ...prev,
-        currentPhase: 'Key information extracted',
+        currentPhase: t.phases.keyInfoExtracted,
         progress: 36,
       }));
 
@@ -152,7 +160,7 @@ export default function Home() {
       // Step 3: Generate summary
       setState((prev) => ({
         ...prev,
-        currentPhase: 'Generating summary...',
+        currentPhase: t.phases.generatingSummary,
         progress: 52,
       }));
 
@@ -179,7 +187,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         summary,
-        currentPhase: 'Summary generated',
+        currentPhase: t.phases.summaryGenerated,
         progress: 64,
       }));
 
@@ -192,7 +200,7 @@ export default function Home() {
       // Step 4: Translate to Arabic
       setState((prev) => ({
         ...prev,
-        currentPhase: 'Translating to Arabic...',
+        currentPhase: t.phases.translatingArabic,
         progress: 76,
       }));
 
@@ -219,7 +227,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         arabicSummary,
-        currentPhase: 'Translation complete',
+        currentPhase: t.phases.translationComplete,
         progress: 85,
       }));
 
@@ -229,7 +237,7 @@ export default function Home() {
       // Step 5: Match sentences for highlighting
       setState((prev) => ({
         ...prev,
-        currentPhase: 'Matching sentences for highlighting...',
+        currentPhase: t.phases.matchingSentences,
         progress: 91,
       }));
 
@@ -262,7 +270,7 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         matchedSentences: matches,
-        currentPhase: 'Complete!',
+        currentPhase: t.phases.complete,
         progress: 100,
         isProcessing: false,
       }));
@@ -274,7 +282,7 @@ export default function Home() {
         ...prev,
         isProcessing: false,
         error: error.message || 'An error occurred',
-        currentPhase: 'Error',
+        currentPhase: t.phases.error,
         progress: 0,
       }));
     }
@@ -295,56 +303,64 @@ export default function Home() {
                 />
               </Link>
               <Link href="/" className="cursor-pointer">
-                <TextAnimate
-                  animation="blurInUp"
-                  by="character"
-                  once
-                  as="h1"
-                  className="text-5xl md:text-6xl tracking-tight"
-                  style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}
-                >
-                  News AI
-                </TextAnimate>
+                {mounted ? (
+                  <TextAnimate
+                    animation="blurInUp"
+                    by="character"
+                    once
+                    as="h1"
+                    className="text-5xl md:text-6xl tracking-tight navbar-brand"
+                    style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}
+                  >
+                    News AI
+                  </TextAnimate>
+                ) : (
+                  <h1 className="text-5xl md:text-6xl tracking-tight navbar-brand opacity-0" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
+                    News AI
+                  </h1>
+                )}
               </Link>
             </div>
-            <p className="text-lg md:text-xl leading-relaxed mb-12" style={{ color: 'var(--navbar-white-icon)' }}>
-              <TextAnimate
-                animation="fadeIn"
-                by="word"
-                as="span"
-                delay={0.5}
-                staggerDelay={0.05}
-              >
-                Know exactly where your summary comes from—with
-              </TextAnimate>
-              {' '}
-              {!hasPlayedLandingHighlight ? (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 1.0 }}
-                  onAnimationComplete={() => {
-                    // Set flag after 3 seconds (enough time for highlight to animate and erase)
-                    setTimeout(() => setHasPlayedLandingHighlight(true), 3000);
-                  }}
+            {mounted && (
+              <p className="text-lg md:text-xl leading-relaxed mb-12" style={{ color: 'var(--navbar-white-icon)' }}>
+                <TextAnimate
+                  animation="fadeIn"
+                  by="word"
+                  as="span"
+                  delay={0.5}
+                  staggerDelay={0.05}
                 >
-                  <Highlighter
-                    strokeWidth={2}
-                    animationDuration={900}
-                    iterations={Math.random() < 0.5 ? 1 : 2}
-                    padding={6}
-                    multiline={true}
-                    isView={false}
-                    delay={1800}
-                    randomize={true}
+                  {t.page.tagline}
+                </TextAnimate>
+                {' '}
+                {!hasPlayedLandingHighlight ? (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.0 }}
+                    onAnimationComplete={() => {
+                      // Set flag after 3 seconds (enough time for highlight to animate and erase)
+                      setTimeout(() => setHasPlayedLandingHighlight(true), 3000);
+                    }}
                   >
-                    interactive highlighting
-                  </Highlighter>
-                </motion.span>
-              ) : (
-                <span style={{ color: 'var(--navbar-white-icon)' }}>interactive highlighting</span>
-              )}
-            </p>
+                    <Highlighter
+                      strokeWidth={2}
+                      animationDuration={900}
+                      iterations={Math.random() < 0.5 ? 1 : 2}
+                      padding={6}
+                      multiline={true}
+                      isView={false}
+                      delay={1800}
+                      randomize={true}
+                    >
+                      {t.page.interactiveHighlighting}
+                    </Highlighter>
+                  </motion.span>
+                ) : (
+                  <span style={{ color: 'var(--navbar-white-icon)' }}>{t.page.interactiveHighlighting}</span>
+                )}
+              </p>
+            )}
 
             {/* Input Section - Always visible on landing */}
             {!processingComplete && !state.isProcessing && (
@@ -377,8 +393,8 @@ export default function Home() {
         {/* Error Message */}
         {state.error && (
           <div className="max-w-4xl mx-auto mb-12 p-6 rounded-xl shadow-md animate-slideInDown" style={{ backgroundColor: 'var(--card-bg)', border: '2px solid #ff4444', color: '#ff6666' }}>
-            <p className="font-bold text-lg mb-2">Error:</p>
-            <p>{state.error}</p>
+            <p className="font-bold text-lg mb-2" suppressHydrationWarning>{t.page.error}</p>
+            <p suppressHydrationWarning>{state.error}</p>
           </div>
         )}
 
@@ -422,8 +438,8 @@ export default function Home() {
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--navbar-indicator)'}
               >
                 {/* Button text */}
-                <span className="text-sm font-medium text-[#101010] transition-colors duration-300">
-                  New Article
+                <span className="text-sm font-medium text-[#101010] transition-colors duration-300" suppressHydrationWarning>
+                  {t.page.newArticle}
                 </span>
 
                 {/* White circle with animated arrow */}
@@ -507,7 +523,7 @@ export default function Home() {
                     opacity: 0.7,
                     borderBottom: '2px solid var(--border-color)'
                   }}>
-                    English Summary
+                    {t.summary.englishHeading}
                   </h2>
                   <div
                     className="leading-relaxed whitespace-pre-wrap"

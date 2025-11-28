@@ -294,6 +294,113 @@ body {
   }
 }
 
+/* ==================== RTL SUPPORT ==================== */
+
+/* RTL Direction Support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* RTL Navbar Adjustments */
+[dir="rtl"] .nav-indicator {
+  left: auto;
+  right: -1.5rem;
+}
+
+[dir="rtl"] .navbar-logo-item {
+  left: auto;
+  right: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  [dir="rtl"] .navbar-logo-item {
+    left: auto;
+    right: 1rem;
+  }
+}
+
+/* Keep brand names LTR even in RTL mode */
+.footer-logo-text,
+.navbar-brand {
+  direction: ltr !important;
+  unicode-bidi: bidi-override;
+}
+
+/* RTL Footer Adjustments */
+[dir="rtl"] .footer-section {
+  text-align: right;
+}
+
+/* RTL Language Toggle */
+.language-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.language-text {
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Montserrat', -apple-system, system-ui, sans-serif;
+}
+
+/* RTL Form Adjustments */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+[dir="rtl"] input::placeholder,
+[dir="rtl"] textarea::placeholder {
+  text-align: right;
+}
+
+[dir="rtl"] label {
+  text-align: right;
+}
+
+/* RTL Submit Button Position */
+[dir="rtl"] .article-submit-button {
+  right: auto !important;
+  left: 1rem !important;
+}
+
+/* RTL Contact Button Circle Position */
+[dir="rtl"] .contact-send-button .button-circle {
+  margin-left: 0 !important;
+  margin-right: 1rem !important;
+}
+
+/* RTL Flexbox Reversals */
+[dir="rtl"] .flex-reverse-rtl {
+  flex-direction: row-reverse;
+}
+
+/* RTL Text Alignment */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* RTL Margin/Padding Adjustments */
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
 /* ==================== COMPONENT STYLES ==================== */
 
 /* Standard Button/Card Component */

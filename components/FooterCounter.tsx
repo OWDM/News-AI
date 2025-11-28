@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export type FooterCounterStyle = 'inline-text' | 'badge' | 'stat-line' | 'minimal-icon';
 
@@ -10,10 +11,17 @@ interface FooterCounterProps {
 }
 
 export default function FooterCounter({ totalCount, style }: FooterCounterProps) {
+  const t = useTranslation();
   const targetCount = totalCount || 1247;
   const [displayCount, setDisplayCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const counterRef = useRef<HTMLDivElement>(null);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Intersection observer to trigger animation when visible
   useEffect(() => {
@@ -58,11 +66,11 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
   // Style 1: Inline Text - Just text, no container
   if (style === 'inline-text') {
     return (
-      <p ref={counterRef} className="text-sm" style={{ color: 'var(--navbar-white-icon)' }}>
+      <p ref={counterRef} className="text-sm" style={{ color: 'var(--navbar-white-icon)' }} suppressHydrationWarning>
         <span style={{ color: 'var(--sec)', fontWeight: 600 }}>
           {displayCount.toLocaleString()}+
         </span>
-        {' '}articles generated
+        {mounted && <>{' '}{t.footer.articlesGenerated.toLowerCase()}</>}
       </p>
     );
   }
@@ -81,9 +89,11 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         <span className="text-xs font-semibold" style={{ color: 'var(--sec)' }}>
           {displayCount.toLocaleString()}+
         </span>
-        <span className="text-xs" style={{ color: 'var(--navbar-white-icon)', opacity: 0.8 }}>
-          Articles Generated
-        </span>
+        {mounted && (
+          <span className="text-xs" style={{ color: 'var(--navbar-white-icon)', opacity: 0.8 }}>
+            {t.footer.articlesGenerated}
+          </span>
+        )}
       </div>
     );
   }
@@ -95,9 +105,11 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
         <span className="text-2xl font-bold" style={{ color: 'var(--sec)' }}>
           {displayCount.toLocaleString()}+
         </span>
-        <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
-          Articles<br/>Generated
-        </span>
+        {mounted && (
+          <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
+            {t.footer.articlesGenerated}
+          </span>
+        )}
       </div>
     );
   }

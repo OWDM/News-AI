@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface ArticleInputProps {
   onSubmit: (content: string, isUrl: boolean) => void;
@@ -12,12 +13,13 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
   const [validationError, setValidationError] = useState<string | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const t = useTranslation();
 
   const placeholders = [
-    'https://techcrunch.com/article-about-ai',
-    'Scientists at MIT developed a new AI system that can predict protein structures...',
-    'https://www.nature.com/articles/science-breakthrough',
-    'Researchers discovered a quantum algorithm for complex optimization...',
+    t.input.placeholder1,
+    t.input.placeholder2,
+    t.input.placeholder3,
+    t.input.placeholder4,
   ];
 
   // Rotate placeholder every 4 seconds (extended for animation)
@@ -54,7 +56,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
 
     // Check if multiple URLs are present
     if (urls.length > 1) {
-      setValidationError('Only one URL is allowed at a time');
+      setValidationError(t.input.validationError);
     }
   };
 
@@ -68,7 +70,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
 
     // Validation: Check for multiple URLs
     if (urls.length > 1) {
-      setValidationError('Only one URL is allowed at a time');
+      setValidationError(t.input.validationError);
       return;
     }
 
@@ -139,7 +141,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
             <button
               onClick={handleSubmit}
               disabled={!isValid}
-              className="absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition animate-scaleIn"
+              className="article-submit-button absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition animate-scaleIn"
               style={{
                 backgroundColor: isValid ? 'var(--navbar-indicator)' : '#2a2a2a',
                 color: isValid ? '#101010' : '#666666',
@@ -163,8 +165,8 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
       )}
 
       {/* Info Text */}
-      <p className="text-xs mt-3 text-center leading-relaxed" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
-        Paste an article (130+ words) or URL to generate an AI-powered summary with Arabic translation
+      <p className="text-xs mt-3 text-center leading-relaxed" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }} suppressHydrationWarning>
+        {t.input.infoText}
       </p>
     </div>
   );
