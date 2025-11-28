@@ -8,25 +8,30 @@ interface ToggleSwitchProps {
 
 export default function ToggleSwitch({ enabled, onToggle, label }: ToggleSwitchProps) {
   return (
-    <div className="flex items-center gap-3">
-      {label && (
-        <span className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>{label}</span>
-      )}
+    <div className="inline-flex items-center gap-4 p-4 rounded-xl smooth-transition" style={{
+      backgroundColor: 'var(--card-bg)',
+      border: '2px solid var(--border-color)'
+    }}>
+      <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+        {enabled ? 'Hide Highlighting' : 'Show Highlighting'}
+      </span>
       <button
         type="button"
         onClick={onToggle}
-        className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none"
+        className="relative inline-flex h-7 w-14 items-center rounded-full transition-all duration-500 focus:outline-none"
         style={{
-          backgroundColor: enabled ? 'var(--navbar-indicator)' : 'var(--background)',
-          border: '1px solid var(--border-color)',
+          backgroundColor: enabled ? 'var(--navbar-indicator)' : '#2a2a2a',
         }}
         role="switch"
         aria-checked={enabled}
       >
         <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
-            enabled ? 'translate-x-6' : 'translate-x-1'
+          className={`inline-block h-5 w-5 transform rounded-full transition-all duration-500 shadow-md ${
+            enabled ? 'translate-x-8 bg-white' : 'translate-x-1 bg-gray-400'
           }`}
+          style={{
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+          }}
         />
       </button>
     </div>

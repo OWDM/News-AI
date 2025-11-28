@@ -15,9 +15,9 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
 
   const placeholders = [
     'https://techcrunch.com/article-about-ai',
-    'Scientists at MIT have developed a new artificial intelligence system that can predict protein structures with unprecedented accuracy. The breakthrough could revolutionize drug discovery...',
+    'Scientists at MIT developed a new AI system that can predict protein structures...',
     'https://www.nature.com/articles/science-breakthrough',
-    'Researchers have discovered a novel quantum computing algorithm that promises to solve complex optimization problems exponentially faster than classical computers. The team demonstrated...',
+    'Researchers discovered a quantum algorithm for complex optimization...',
   ];
 
   // Rotate placeholder every 4 seconds (extended for animation)
@@ -83,66 +83,81 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // If Enter is pressed without Shift, submit the form
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent new line
+      handleSubmit();
+    }
+    // If Shift+Enter is pressed, allow default behavior (new line)
+  };
+
   const isValid = input.trim().length > 0 && !validationError;
 
   return (
-    <div className="w-full p-8 rounded-2xl shadow-lg" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-      {/* Input Area */}
-      <div className="relative border-2 rounded-xl" style={{
-        borderColor: validationError ? '#ff4444' : 'var(--border-color)',
-        backgroundColor: 'var(--background)',
-      }}>
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={(e) => handleInputChange(e.target.value)}
-          placeholder={placeholders[placeholderIndex]}
-          rows={1}
-          className="w-full p-5 rounded-xl focus:outline-none resize-none placeholder-fade scrollbar-thin"
+    <div className="w-full p-8 rounded-lg shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+      {/* Input Area with Shine Border */}
+      <div className="relative rounded-md p-[2px]">
+        {/* Shine Border Effect */}
+        <div
+          className="shine-border animate-shine"
           style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: 'var(--foreground)',
-            minHeight: '56px',
-            maxHeight: '280px',
-            overflow: 'auto',
-            paddingRight: isValid || isProcessing ? '60px' : '20px',
-            paddingBottom: '20px',
-          }}
-          disabled={isProcessing}
+            padding: '2px',
+            '--shine-color-1': '#a476ff',
+            '--shine-color-2': '#A9FF5B',
+          } as React.CSSProperties}
         />
 
-        {/* Inline Submit Button - Bottom Right Inside Border */}
-        {isValid && !isProcessing && (
-          <button
-            onClick={handleSubmit}
-            className="absolute bottom-4 right-4 p-2.5 rounded-lg transition-all duration-300 hover:scale-110 z-10"
+        {/* Inner container - fills the space created by padding */}
+        <div className="relative rounded-[6px] bg-[var(--background)]">
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => handleInputChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholders[placeholderIndex]}
+            rows={1}
+            className="w-full p-5 bg-transparent rounded-[6px] border-0 focus:outline-none focus:ring-0 focus:border-0 focus:bg-transparent active:bg-transparent resize-none placeholder-fade scrollbar-thin transition-none"
             style={{
-              backgroundColor: 'var(--navbar-indicator)',
-              color: '#101010',
-              boxShadow: '0 2px 8px rgba(169, 255, 91, 0.4)',
+              color: 'var(--foreground)',
+              minHeight: '56px',
+              maxHeight: '280px',
+              overflow: 'auto',
+              paddingRight: isProcessing ? '20px' : '60px',
+              paddingBottom: '20px',
+              boxShadow: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              backgroundColor: 'transparent',
+              outline: 'none',
+              outlineOffset: '0',
             }}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-          </button>
-        )}
+            disabled={isProcessing}
+          />
 
-        {/* Processing Indicator */}
-        {isProcessing && (
-          <div className="absolute bottom-4 right-4 p-2.5 z-10">
-            <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ color: 'var(--navbar-indicator)' }}>
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          </div>
-        )}
+          {/* Inline Submit Button - Bottom Right Inside Border */}
+          {!isProcessing && (
+            <button
+              onClick={handleSubmit}
+              disabled={!isValid}
+              className="article-submit-button absolute bottom-4 right-4 p-2.5 rounded-lg smooth-transition animate-scaleIn"
+              style={{
+                backgroundColor: isValid ? 'var(--navbar-indicator)' : '#2a2a2a',
+                color: isValid ? '#101010' : '#666666',
+                cursor: isValid ? 'pointer' : 'not-allowed',
+                opacity: isValid ? 1 : 0.5,
+              }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Validation Error */}
       {validationError && (
-        <p className="text-sm px-2 mt-2" style={{ color: '#ff6666' }}>
+        <p className="text-sm px-2 mt-2 animate-slideInDown" style={{ color: '#ff6666' }}>
           ⚠️ {validationError}
         </p>
       )}

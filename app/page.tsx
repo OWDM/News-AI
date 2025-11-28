@@ -1,12 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import ArticleInput from '@/components/ArticleInput';
 import ProcessingProgress from '@/components/ProcessingProgress';
 import SummaryDisplay from '@/components/SummaryDisplay';
 import ArticleDisplay from '@/components/ArticleDisplay';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Footer from '@/components/Footer';
+import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
+import { Highlighter } from '@/components/ui/highlighter';
+import { TextAnimate } from '@/registry/magicui/text-animate';
+import { motion } from 'framer-motion';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
 
 export default function Home() {
@@ -23,8 +28,16 @@ export default function Home() {
     matchedSentences: [],
   });
 
-  const [showHighlighting, setShowHighlighting] = useState(true);
+  const [showHighlighting, setShowHighlighting] = useState(false);
   const [processingComplete, setProcessingComplete] = useState(false);
+  const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
+  const [hasPlayedLandingHighlight, setHasPlayedLandingHighlight] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only enabling animations after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (content: string, isUrl: boolean) => {
     try {
@@ -42,6 +55,15 @@ export default function Home() {
         matchedSentences: [],
       });
       setProcessingComplete(false);
+      setHasShownHighlighting(false); // Reset for new article
+
+      // Smooth scroll to generator section
+      setTimeout(() => {
+        const generatorSection = document.getElementById('generator');
+        if (generatorSection) {
+          generatorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
 
       let articleText = content;
 
@@ -50,8 +72,15 @@ export default function Home() {
         setState((prev) => ({
           ...prev,
           currentPhase: 'Extracting article from URL...',
-          progress: 5,
+          progress: 3,
         }));
+
+        // Smooth progress increments
+        await new Promise(resolve => setTimeout(resolve, 200));
+        setState((prev) => ({ ...prev, progress: 6 }));
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+        setState((prev) => ({ ...prev, progress: 9 }));
 
         const response = await fetch('/api/extract-content', {
           method: 'POST',
@@ -66,21 +95,36 @@ export default function Home() {
         }
 
         articleText = data.content;
+
+        setState((prev) => ({ ...prev, progress: 12 }));
+        await new Promise(resolve => setTimeout(resolve, 150));
       }
 
       setState((prev) => ({
         ...prev,
         article: articleText,
         currentPhase: 'Article loaded',
-        progress: 10,
+        progress: 15,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 18 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 21 }));
 
       // Step 2: Extract key information (RAG with 3 parallel QA)
       setState((prev) => ({
         ...prev,
         currentPhase: 'Extracting key information...',
-        progress: 20,
+        progress: 24,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 28 }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 32 }));
 
       const keyInfoResponse = await fetch('/api/extract-key-info', {
         method: 'POST',
@@ -99,15 +143,30 @@ export default function Home() {
       setState((prev) => ({
         ...prev,
         currentPhase: 'Key information extracted',
-        progress: 40,
+        progress: 36,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 40 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 44 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 48 }));
 
       // Step 3: Generate summary
       setState((prev) => ({
         ...prev,
         currentPhase: 'Generating summary...',
-        progress: 50,
+        progress: 52,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 56 }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 60 }));
 
       const summaryResponse = await fetch('/api/generate-summary', {
         method: 'POST',
@@ -127,15 +186,27 @@ export default function Home() {
         ...prev,
         summary,
         currentPhase: 'Summary generated',
-        progress: 65,
+        progress: 64,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 68 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 72 }));
 
       // Step 4: Translate to Arabic
       setState((prev) => ({
         ...prev,
         currentPhase: 'Translating to Arabic...',
-        progress: 70,
+        progress: 76,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 79 }));
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setState((prev) => ({ ...prev, progress: 82 }));
 
       const arabicResponse = await fetch('/api/translate-arabic', {
         method: 'POST',
@@ -158,12 +229,21 @@ export default function Home() {
         progress: 85,
       }));
 
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 88 }));
+
       // Step 5: Match sentences for highlighting
       setState((prev) => ({
         ...prev,
         currentPhase: 'Matching sentences for highlighting...',
-        progress: 90,
+        progress: 91,
       }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 93 }));
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+      setState((prev) => ({ ...prev, progress: 95 }));
 
       const matchResponse = await fetch('/api/match-sentences', {
         method: 'POST',
@@ -178,6 +258,12 @@ export default function Home() {
       }
 
       const matches: SentenceMatch[] = matchData.matches;
+
+      setState((prev) => ({ ...prev, progress: 97 }));
+      await new Promise(resolve => setTimeout(resolve, 150));
+
+      setState((prev) => ({ ...prev, progress: 99 }));
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       setState((prev) => ({
         ...prev,
@@ -202,49 +288,111 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
-      {/* Header */}
+      {/* Header with Input */}
       <section id="home" className="min-h-screen flex flex-col justify-center">
-        <header className="text-center">
+        <div className="text-center">
           <div className="max-w-4xl mx-auto px-8">
-            <div className="flex items-center justify-center gap-6 mb-6">
-              <img
-                src="/newsai-logo.png"
-                alt="News AI Logo"
-                className="w-24 h-24 md:w-32 md:h-32 object-contain"
-              />
-              <h1 className="text-7xl md:text-8xl tracking-tight" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
-                News AI
-              </h1>
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <Link href="/" className="cursor-pointer">
+                <img
+                  src="/newsai-logo.png"
+                  alt="News AI Logo"
+                  className="w-16 h-16 md:w-20 md:h-20 object-contain animate-logo-entrance"
+                />
+              </Link>
+              <Link href="/" className="cursor-pointer">
+                {mounted ? (
+                  <TextAnimate
+                    animation="blurInUp"
+                    by="character"
+                    once
+                    as="h1"
+                    className="text-5xl md:text-6xl tracking-tight navbar-brand"
+                    style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}
+                  >
+                    News AI
+                  </TextAnimate>
+                ) : (
+                  <h1 className="text-5xl md:text-6xl tracking-tight navbar-brand opacity-0" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
+                    News AI
+                  </h1>
+                )}
+              </Link>
             </div>
-            <p className="text-xl md:text-2xl leading-relaxed" style={{ color: 'var(--navbar-white-icon)' }}>
-              Transform technical articles into structured summaries with AI-powered translations
-            </p>
+            {mounted && (
+              <p className="text-lg md:text-xl leading-relaxed mb-12" style={{ color: 'var(--navbar-white-icon)' }}>
+                <TextAnimate
+                  animation="fadeIn"
+                  by="word"
+                  as="span"
+                  delay={0.5}
+                  staggerDelay={0.05}
+                >
+                  Know exactly where your summary comes from—with
+                </TextAnimate>
+                {' '}
+                {!hasPlayedLandingHighlight ? (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.0 }}
+                    onAnimationComplete={() => {
+                      // Set flag after 3 seconds (enough time for highlight to animate and erase)
+                      setTimeout(() => setHasPlayedLandingHighlight(true), 3000);
+                    }}
+                  >
+                    <Highlighter
+                      strokeWidth={2}
+                      animationDuration={900}
+                      iterations={Math.random() < 0.5 ? 1 : 2}
+                      padding={6}
+                      multiline={true}
+                      isView={false}
+                      delay={1800}
+                      randomize={true}
+                    >
+                      interactive highlighting
+                    </Highlighter>
+                  </motion.span>
+                ) : (
+                  <span style={{ color: 'var(--navbar-white-icon)' }}>interactive highlighting</span>
+                )}
+              </p>
+            )}
+
+            {/* Input Section - Always visible on landing */}
+            {!processingComplete && !state.isProcessing && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+              >
+                <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
+              </motion.div>
+            )}
           </div>
-        </header>
+        </div>
       </section>
 
       {/* Main Content */}
-      <section id="generator" className="min-h-screen pt-24 md:pt-32">
-        <main className="px-8 py-16">
-        {/* Input Section */}
-        {!processingComplete && (
-          <div className="max-w-4xl mx-auto mb-12">
-            <ArticleInput onSubmit={handleSubmit} isProcessing={state.isProcessing} />
-          </div>
-        )}
+      <section
+        id="generator"
+        className={`pt-24 md:pt-32 ${state.isProcessing ? 'min-h-screen flex items-center' : ''}`}
+      >
+        <main className="px-8 py-8 w-full">
 
         {/* Processing Progress */}
         {state.isProcessing && (
-          <div className="max-w-4xl mx-auto mb-12">
+          <div className="max-w-4xl mx-auto mb-12 animate-fadeInUp">
             <ProcessingProgress currentPhase={state.currentPhase} progress={state.progress} />
           </div>
         )}
 
         {/* Error Message */}
         {state.error && (
-          <div className="max-w-4xl mx-auto mb-12 p-6 rounded-xl shadow-md" style={{ backgroundColor: 'var(--card-bg)', border: '2px solid #ff4444', color: '#ff6666' }}>
+          <div className="max-w-4xl mx-auto mb-12 p-6 rounded-xl shadow-md animate-slideInDown" style={{ backgroundColor: 'var(--card-bg)', border: '2px solid #ff4444', color: '#ff6666' }}>
             <p className="font-bold text-lg mb-2">Error:</p>
-            <p>{state.error}</p>
+            <p suppressHydrationWarning>{state.error}</p>
           </div>
         )}
 
@@ -252,10 +400,12 @@ export default function Home() {
         {processingComplete && state.summary && (
           <>
             {/* New Article Button */}
-            <div className="max-w-7xl mx-auto mb-8 text-center">
+            <div className="max-w-7xl mx-auto mb-8 flex justify-end px-8 animate-fadeIn">
               <button
                 onClick={() => {
                   setProcessingComplete(false);
+                  setShowHighlighting(false);
+                  setHasShownHighlighting(false);
                   setState({
                     isProcessing: false,
                     currentPhase: '',
@@ -268,77 +418,216 @@ export default function Home() {
                     highlightedSummary: '',
                     matchedSentences: [],
                   });
+
+                  // Smooth scroll back to home
+                  setTimeout(() => {
+                    const homeSection = document.getElementById('home');
+                    if (homeSection) {
+                      homeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 100);
                 }}
-                className="px-8 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
-                style={{ backgroundColor: 'var(--navbar-indicator)', color: '#101010' }}
+                className="group rounded-full pl-5 pr-1 py-1 flex items-center justify-between overflow-hidden relative"
+                style={{
+                  backgroundColor: 'var(--navbar-indicator)',
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--sec)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--navbar-indicator)'}
               >
-                ✨ Process New Article
+                {/* Button text */}
+                <span className="text-sm font-medium text-[#101010] transition-colors duration-300">
+                  New Article
+                </span>
+
+                {/* White circle with animated arrow */}
+                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 relative ml-3">
+                  {/* First arrow - moves up-right and fades out on hover */}
+                  <svg
+                    className="w-3.5 h-3.5 transition-all duration-200 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:opacity-0"
+                    style={{ color: '#101010' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17L17 7M17 7H7M17 7v10"
+                    />
+                  </svg>
+
+                  {/* Second arrow - positioned bottom-left, moves to center and fades in on hover */}
+                  <svg
+                    className="w-3.5 h-3.5 absolute transition-all duration-200 -translate-x-2 translate-y-2 opacity-0 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100"
+                    style={{ color: 'var(--sec)' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17L17 7M17 7H7M17 7v10"
+                    />
+                  </svg>
+                </div>
               </button>
             </div>
 
             {/* Arabic Summary - Full Width */}
-            <SummaryDisplay
-              summary={state.summary}
-              arabicSummary={state.arabicSummary}
-              matches={state.matchedSentences}
-              showHighlighting={showHighlighting}
-            />
+            <div className="animate-fadeInUp">
+              <SummaryDisplay
+                summary={state.summary}
+                arabicSummary={state.arabicSummary}
+                matches={state.matchedSentences}
+                showHighlighting={showHighlighting}
+                isFirstTime={!hasShownHighlighting && showHighlighting}
+              />
+            </div>
 
             {/* Highlight Toggle */}
-            <div className="max-w-7xl mx-auto mb-8 flex justify-center">
+            <div className="max-w-7xl mx-auto mb-8 flex justify-center animate-fadeIn animate-delay-100">
               <ToggleSwitch
                 enabled={showHighlighting}
-                onToggle={() => setShowHighlighting(!showHighlighting)}
-                label="Show Highlighting"
+                onToggle={() => {
+                  if (!showHighlighting && !hasShownHighlighting) {
+                    setHasShownHighlighting(true);
+                  }
+                  setShowHighlighting(!showHighlighting);
+                }}
               />
             </div>
 
             {/* Two Column Layout: Article (left) + English Summary (right sticky) */}
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fadeInUp animate-delay-200">
               {/* Left Column - Original Article (scrollable) */}
               <div>
                 <ArticleDisplay
                   article={state.article}
                   matches={state.matchedSentences}
                   showHighlighting={showHighlighting}
+                  isFirstTime={!hasShownHighlighting && showHighlighting}
                 />
               </div>
 
               {/* Right Column - English Summary (sticky, shown inline by SummaryDisplay component) */}
               <div className="lg:block hidden">
-                <div className="p-6 rounded-xl shadow-lg sticky top-4" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-                  <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
-                    <span className="text-2xl">📝</span>
+                <div className="p-8 rounded-2xl shadow-lg sticky top-4 smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider mb-6 pb-4" style={{
+                    color: 'var(--navbar-white-icon)',
+                    opacity: 0.7,
+                    borderBottom: '2px solid var(--border-color)'
+                  }}>
                     English Summary
                   </h2>
                   <div
                     className="leading-relaxed whitespace-pre-wrap"
-                    style={{ color: 'var(--foreground)' }}
-                    dangerouslySetInnerHTML={{
-                      __html: (() => {
+                    style={{ color: 'var(--foreground)', lineHeight: '1.8' }}
+                  >
+                    {(() => {
+                      const renderHighlightedText = (text: string) => {
                         if (!showHighlighting || !state.matchedSentences || state.matchedSentences.length === 0) {
-                          return state.summary;
+                          return <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>;
                         }
+
+                        // Colors that match the interactive highlighter (from highlighter.tsx)
+                        const highlightColors: string[] = [
+                          "#7AB842", // Green (brand color)
+                          "#B89B00", // Gold
+                          "#B84D4D", // Coral Red
+                          "#38948D", // Turquoise
+                          "#6BA298", // Mint
+                          "#B85045", // Salmon
+                          "#4D43A7", // Purple
+                          "#0097B8", // Bright Blue
+                          "#B87702", // Orange
+                          "#AF4BA1", // Pink
+                          "#349EB2", // Sky Blue
+                          "#1BA05D", // Emerald Green
+                        ];
+
                         const generateColors = (count: number): string[] => {
                           const colors: string[] = [];
                           for (let i = 0; i < count; i++) {
-                            const hue = (i * 360) / count;
-                            colors.push(`hsl(${hue}, 65%, 40%)`);
+                            colors.push(highlightColors[i % highlightColors.length]);
                           }
                           return colors;
                         };
+
                         const colors = generateColors(state.matchedSentences.length);
-                        let highlightedText = state.summary;
+                        let remainingText = text;
+                        const elements: React.ReactNode[] = [];
+                        let keyCounter = 0;
+                        const isFirstTime = !hasShownHighlighting && showHighlighting;
+
                         state.matchedSentences.forEach((match, index) => {
                           const sentence = match.summary_sentence;
                           const color = colors[index];
-                          const highlighted = `<span class="highlight-animate" style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${sentence}</span>`;
-                          highlightedText = highlightedText.replace(sentence, highlighted);
+                          const animationDelay = index * 1200; // 1200ms delay between each color group
+
+                          const sentenceIndex = remainingText.indexOf(sentence);
+                          if (sentenceIndex !== -1) {
+                            // Add text before the sentence (preserve whitespace)
+                            if (sentenceIndex > 0) {
+                              const beforeText = remainingText.substring(0, sentenceIndex);
+                              elements.push(
+                                <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+                                  {beforeText}
+                                </span>
+                              );
+                            }
+
+                            // Add highlighted sentence
+                            elements.push(
+                              <HighlightText
+                                key={`highlight-${keyCounter++}`}
+                                text={sentence}
+                                color={color}
+                                duration={1.5}
+                                delay={isFirstTime ? animationDelay : 0}
+                              />
+                            );
+
+                            // Update remaining text
+                            remainingText = remainingText.substring(sentenceIndex + sentence.length);
+                          }
                         });
-                        return highlightedText;
-                      })(),
-                    }}
-                  />
+
+                        // Add any remaining text (preserve whitespace)
+                        if (remainingText) {
+                          elements.push(
+                            <span key={`text-${keyCounter++}`} style={{ whiteSpace: 'pre-wrap' }}>
+                              {remainingText}
+                            </span>
+                          );
+                        }
+
+                        return <>{elements}</>;
+                      };
+
+                      // Make first line (title) larger
+                      const lines = state.summary.split('\n').filter(line => line.trim());
+                      if (lines.length > 0) {
+                        const title = lines[0];
+                        const rest = lines.slice(1).join('\n');
+                        return (
+                          <>
+                            <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
+                              {title}
+                            </div>
+                            <div className="text-base">
+                              {renderHighlightedText(rest)}
+                            </div>
+                          </>
+                        );
+                      }
+
+                      return renderHighlightedText(state.summary);
+                    })()}
+                  </div>
                 </div>
               </div>
             </div>
