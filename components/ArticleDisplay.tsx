@@ -116,8 +116,8 @@ export default function ArticleDisplay({
   };
 
   return (
-    <div className="p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-      <h2 className="text-xs font-semibold uppercase tracking-wider mb-6 pb-4" style={{
+    <div className="p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+      <h2 className="text-[8px] sm:text-xs font-semibold uppercase tracking-wider mb-4 sm:mb-6 pb-3 sm:pb-4" style={{
         color: 'var(--navbar-white-icon)',
         opacity: 0.7,
         borderBottom: '2px solid var(--border-color)'

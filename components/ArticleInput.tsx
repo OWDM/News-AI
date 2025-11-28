@@ -95,7 +95,7 @@ export default function ArticleInput({ onSubmit, isProcessing }: ArticleInputPro
   const isValid = input.trim().length > 0 && !validationError;
 
   return (
-    <div className="w-full p-8 rounded-lg shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+    <div className="w-full p-4 sm:p-6 md:p-8 rounded-lg shadow-lg smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
       {/* Input Area with Shine Border */}
       <div className="relative rounded-md p-[2px]">
         {/* Shine Border Effect */}
