@@ -7,9 +7,9 @@ import ProcessingProgress from '@/components/ProcessingProgress';
 import SummaryDisplay from '@/components/SummaryDisplay';
 import ArticleDisplay from '@/components/ArticleDisplay';
 import ToggleSwitch from '@/components/ToggleSwitch';
+import TextSizeControl from '@/components/TextSizeControl';
 import Footer from '@/components/Footer';
 import { HighlightText } from '@/components/animate-ui/primitives/texts/highlight';
-import { Highlighter } from '@/components/ui/highlighter';
 import { TextAnimate } from '@/registry/magicui/text-animate';
 import { motion } from 'framer-motion';
 import type { ProcessingState, KeyInfo, SentenceMatch } from '@/types';
@@ -31,8 +31,8 @@ export default function Home() {
   const [showHighlighting, setShowHighlighting] = useState(false);
   const [processingComplete, setProcessingComplete] = useState(false);
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
-  const [hasPlayedLandingHighlight, setHasPlayedLandingHighlight] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [textSize, setTextSize] = useState<number>(100);
 
   // Prevent hydration mismatch by only enabling animations after mount
   useEffect(() => {
@@ -328,35 +328,8 @@ export default function Home() {
                   delay={0.5}
                   staggerDelay={0.05}
                 >
-                  Know exactly where your summary comes from—with
+                  Know exactly where your summary comes from—with interactive highlighting
                 </TextAnimate>
-                {' '}
-                {!hasPlayedLandingHighlight ? (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 1.0 }}
-                    onAnimationComplete={() => {
-                      // Set flag after 3 seconds (enough time for highlight to animate and erase)
-                      setTimeout(() => setHasPlayedLandingHighlight(true), 3000);
-                    }}
-                  >
-                    <Highlighter
-                      strokeWidth={2}
-                      animationDuration={900}
-                      iterations={Math.random() < 0.5 ? 1 : 2}
-                      padding={6}
-                      multiline={true}
-                      isView={false}
-                      delay={1800}
-                      randomize={true}
-                    >
-                      interactive highlighting
-                    </Highlighter>
-                  </motion.span>
-                ) : (
-                  <span style={{ color: 'var(--navbar-white-icon)' }}>interactive highlighting</span>
-                )}
               </p>
             )}
 
@@ -399,8 +372,9 @@ export default function Home() {
         {/* Results Section */}
         {processingComplete && state.summary && (
           <>
-            {/* New Article Button */}
-            <div className="max-w-7xl mx-auto mb-8 flex justify-end px-8 animate-fadeIn">
+            {/* New Article Button and Text Size Control */}
+            <div className="w-full mb-8 animate-fadeIn">
+              <div className="max-w-7xl mx-auto flex justify-between items-center">
               <button
                 onClick={() => {
                   setProcessingComplete(false);
@@ -475,6 +449,12 @@ export default function Home() {
                   </svg>
                 </div>
               </button>
+
+              <TextSizeControl
+                textSize={textSize}
+                onSizeChange={setTextSize}
+              />
+              </div>
             </div>
 
             {/* Arabic Summary - Full Width */}
@@ -485,6 +465,10 @@ export default function Home() {
                 matches={state.matchedSentences}
                 showHighlighting={showHighlighting}
                 isFirstTime={!hasShownHighlighting && showHighlighting}
+                textSize={textSize}
+                onArabicSummaryChange={(newSummary) => {
+                  setState((prev) => ({ ...prev, arabicSummary: newSummary }));
+                }}
               />
             </div>
 
@@ -510,6 +494,7 @@ export default function Home() {
                   matches={state.matchedSentences}
                   showHighlighting={showHighlighting}
                   isFirstTime={!hasShownHighlighting && showHighlighting}
+                  textSize={textSize}
                 />
               </div>
 
@@ -613,12 +598,13 @@ export default function Home() {
                       if (lines.length > 0) {
                         const title = lines[0];
                         const rest = lines.slice(1).join('\n');
+
                         return (
                           <>
-                            <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
+                            <div className="font-bold mb-6" style={{ fontSize: `${textSize * 0.03}rem`, lineHeight: '1.4' }}>
                               {title}
                             </div>
-                            <div className="text-base">
+                            <div style={{ fontSize: `${textSize * 0.016}rem` }}>
                               {renderHighlightedText(rest)}
                             </div>
                           </>

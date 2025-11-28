@@ -10,6 +10,8 @@ interface SummaryDisplayProps {
   matches: SentenceMatch[];
   showHighlighting: boolean;
   isFirstTime?: boolean;
+  textSize?: number;
+  onArabicSummaryChange?: (newSummary: string) => void;
 }
 
 export default function SummaryDisplay({
@@ -18,8 +20,12 @@ export default function SummaryDisplay({
   matches,
   showHighlighting,
   isFirstTime = false,
+  textSize = 100,
+  onArabicSummaryChange,
 }: SummaryDisplayProps) {
   const [copySuccess, setCopySuccess] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState(arabicSummary);
 
   const handleCopy = async () => {
     try {
@@ -29,6 +35,18 @@ export default function SummaryDisplay({
     } catch (error) {
       console.error('Failed to copy:', error);
     }
+  };
+
+  const handleSave = () => {
+    if (onArabicSummaryChange) {
+      onArabicSummaryChange(editedText);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedText(arabicSummary);
+    setIsEditing(false);
   };
 
   // Colors that match the interactive highlighter (from highlighter.tsx)
@@ -118,56 +136,128 @@ export default function SummaryDisplay({
           <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--navbar-white-icon)', opacity: 0.7 }}>
             ARABIC SUMMARY
           </h2>
-          <button
-            onClick={handleCopy}
-            className="group relative p-3 rounded-xl smooth-transition overflow-hidden"
-            style={{
-              backgroundColor: copySuccess ? 'var(--navbar-indicator)' : 'var(--background)',
-              border: '1px solid var(--border-color)',
-              color: copySuccess ? '#101010' : 'var(--foreground)'
-            }}
-          >
-            <span className="relative z-10 flex items-center">
-              {copySuccess ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              )}
-            </span>
-            <div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-10 transform -skew-x-12 transition-all duration-700"
-              style={{ left: '-100%' }}
-            />
-          </button>
-        </div>
-        <div
-          className="leading-loose whitespace-pre-wrap"
-          dir="rtl"
-          style={{ color: 'var(--foreground)', textAlign: 'right', lineHeight: '2' }}
-        >
-          {(() => {
-            const lines = arabicSummary.split('\n').filter(line => line.trim());
-            if (lines.length === 0) return renderHighlightedText(arabicSummary);
-
-            const title = lines[0];
-            const rest = lines.slice(1).join('\n');
-
-            return (
+          <div className="flex gap-2">
+            {isEditing ? (
               <>
-                <div className="text-3xl font-bold mb-6" style={{ lineHeight: '1.4' }}>
-                  {title}
-                </div>
-                <div className="text-xl">
-                  {renderHighlightedText(rest)}
-                </div>
+                <button
+                  onClick={handleCancel}
+                  className="group relative px-4 py-2 rounded-xl smooth-transition overflow-hidden"
+                  style={{
+                    backgroundColor: 'var(--background)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--foreground)'
+                  }}
+                >
+                  <span className="relative z-10 flex items-center gap-2 text-sm font-medium">
+                    Cancel
+                  </span>
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="group relative px-4 py-2 rounded-xl smooth-transition overflow-hidden"
+                  style={{
+                    backgroundColor: 'var(--navbar-indicator)',
+                    border: '1px solid var(--border-color)',
+                    color: '#101010'
+                  }}
+                >
+                  <span className="relative z-10 flex items-center gap-2 text-sm font-medium">
+                    Save
+                  </span>
+                </button>
               </>
-            );
-          })()}
+            ) : (
+              <>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="group relative p-3 rounded-xl smooth-transition overflow-hidden"
+                  style={{
+                    backgroundColor: 'var(--background)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--foreground)'
+                  }}
+                >
+                  <span className="relative z-10 flex items-center">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </span>
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-10 transform -skew-x-12 transition-all duration-700"
+                    style={{ left: '-100%' }}
+                  />
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="group relative p-3 rounded-xl smooth-transition overflow-hidden"
+                  style={{
+                    backgroundColor: copySuccess ? 'var(--navbar-indicator)' : 'var(--background)',
+                    border: '1px solid var(--border-color)',
+                    color: copySuccess ? '#101010' : 'var(--foreground)'
+                  }}
+                >
+                  <span className="relative z-10 flex items-center">
+                    {copySuccess ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    )}
+                  </span>
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-10 transform -skew-x-12 transition-all duration-700"
+                    style={{ left: '-100%' }}
+                  />
+                </button>
+              </>
+            )}
+          </div>
         </div>
+        {isEditing ? (
+          <textarea
+            value={editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+            dir="rtl"
+            className="w-full min-h-[200px] p-4 rounded-lg smooth-transition resize-y font-sans"
+            style={{
+              backgroundColor: 'var(--background)',
+              border: '2px solid var(--sec)',
+              color: 'var(--foreground)',
+              textAlign: 'right',
+              lineHeight: '2',
+              fontSize: `${textSize * 0.2}px`,
+              outline: 'none'
+            }}
+          />
+        ) : (
+          <div
+            className="leading-loose whitespace-pre-wrap"
+            dir="rtl"
+            style={{ color: 'var(--foreground)', textAlign: 'right', lineHeight: '2' }}
+          >
+            {(() => {
+              const lines = arabicSummary.split('\n').filter(line => line.trim());
+              if (lines.length === 0) return renderHighlightedText(arabicSummary);
+
+              const title = lines[0];
+              const rest = lines.slice(1).join('\n');
+
+              return (
+                <>
+                  <div className="font-bold mb-6" style={{ fontSize: `${textSize * 0.03}rem`, lineHeight: '1.4' }}>
+                    {title}
+                  </div>
+                  <div style={{ fontSize: `${textSize * 0.02}rem` }}>
+                    {renderHighlightedText(rest)}
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        )}
       </div>
     </div>
   );
