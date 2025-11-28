@@ -201,7 +201,7 @@ If migrating to Pinecone:
 3. Consider session-based namespaces to avoid cross-request contamination
 4. Update all imports from `createVectorstore` to `createVectorstoreWithPinecone`
 
-## Deployment
+## Deployment 
 
 Built for Vercel deployment with:
 - Next.js 14 App Router
