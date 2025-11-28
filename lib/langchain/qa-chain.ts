@@ -22,27 +22,20 @@ export async function extractKeyInfo(article: string): Promise<KeyInfo> {
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
 
-    // Create retrieval QA chain with optimized retrieval parameters
+    // Create retrieval QA chain
     const chain = RetrievalQAChain.fromLLM(
       llm,
-      vectorstore.asRetriever({
-        k: 8, // Retrieve more chunks for better context (default is 4)
-        searchType: 'mmr', // Use Maximal Marginal Relevance for diversity
-        searchKwargs: {
-          fetchK: 20, // Fetch 20 candidates, then filter to top 8 with MMR
-          lambda: 0.5, // Balance between relevance and diversity (0 = max diversity, 1 = max relevance)
-        },
-      }),
+      vectorstore.asRetriever(),
       {
         returnSourceDocuments: false,
       }
     );
 
-    // Optimized questions aligned with 4-sentence summary structure
+    // Define the 3 questions (same as Python version)
     const questions = [
-      'What specific technology, system, or product was created or introduced? Who developed it and what is its core purpose?',
-      'How does it work technically? What methods, algorithms, or mechanisms does it use? What are the key technical capabilities and measurable results (include specific numbers, percentages, or metrics)?',
-      'What are the planned next steps, future research directions, or potential real-world applications mentioned?',
+      'What are the main technical concepts discussed in this article?',
+      'What are the key findings or advancements mentioned?',
+      'What potential impacts or applications are discussed?',
     ];
 
     // Run all 3 questions in parallel (equivalent to Python threading)

@@ -13,11 +13,10 @@ import { MemoryVectorStore } from 'langchain/vectorstores/memory';
  */
 export async function createVectorstore(text: string) {
   try {
-    // Split text into chunks with optimized parameters for GPT-4o-mini
+    // Split text into chunks
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1500, // Smaller chunks for more precise retrieval
-      chunkOverlap: 300, // Larger overlap to preserve context across boundaries
-      separators: ['\n\n', '\n', '. ', ' ', ''], // Prefer paragraph/sentence boundaries
+      chunkSize: 2000,
+      chunkOverlap: 100,
     });
 
     const docs = await textSplitter.createDocuments([text]);
@@ -60,9 +59,8 @@ import { Pinecone } from '@pinecone-database/pinecone';
 export async function createVectorstoreWithPinecone(text: string, sessionId: string) {
   try {
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1500, // Smaller chunks for more precise retrieval
-      chunkOverlap: 300, // Larger overlap to preserve context across boundaries
-      separators: ['\n\n', '\n', '. ', ' ', ''], // Prefer paragraph/sentence boundaries
+      chunkSize: 2000,
+      chunkOverlap: 100,
     });
 
     const docs = await textSplitter.createDocuments([text]);
