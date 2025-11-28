@@ -228,7 +228,7 @@ export default function SummaryDisplay({
               color: 'var(--foreground)',
               textAlign: 'right',
               lineHeight: '2',
-              fontSize: `${textSize * 0.2}px`,
+              fontSize: `${textSize * 0.16}px`,
               outline: 'none'
             }}
           />
@@ -247,10 +247,10 @@ export default function SummaryDisplay({
 
               return (
                 <>
-                  <div className="font-bold mb-6" style={{ fontSize: `${textSize * 0.03}rem`, lineHeight: '1.4' }}>
+                  <div className="font-bold mb-6" style={{ fontSize: `${textSize * 0.024}rem`, lineHeight: '1.4' }}>
                     {title}
                   </div>
-                  <div style={{ fontSize: `${textSize * 0.02}rem` }}>
+                  <div style={{ fontSize: `${textSize * 0.016}rem` }}>
                     {renderHighlightedText(rest)}
                   </div>
                 </>
