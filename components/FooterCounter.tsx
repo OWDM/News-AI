@@ -10,7 +10,7 @@ interface FooterCounterProps {
 }
 
 export default function FooterCounter({ totalCount, style }: FooterCounterProps) {
-  const targetCount = totalCount || 1247;
+  const [targetCount, setTargetCount] = useState(totalCount || 0);
   const [displayCount, setDisplayCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -20,6 +20,28 @@ export default function FooterCounter({ totalCount, style }: FooterCounterProps)
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Fetch article count from API
+  useEffect(() => {
+    if (totalCount !== undefined) {
+      setTargetCount(totalCount);
+      return;
+    }
+
+    const fetchCount = async () => {
+      try {
+        const response = await fetch('/api/article-count');
+        const data = await response.json();
+        if (data.data && typeof data.data.count === 'number') {
+          setTargetCount(data.data.count);
+        }
+      } catch (error) {
+        console.error('Failed to fetch article count:', error);
+      }
+    };
+
+    fetchCount();
+  }, [totalCount]);
 
   // Intersection observer to trigger animation when visible
   useEffect(() => {

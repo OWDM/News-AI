@@ -12,6 +12,7 @@ interface SummaryDisplayProps {
   isFirstTime?: boolean;
   textSize?: number;
   onArabicSummaryChange?: (newSummary: string) => void;
+  articleId?: number; // Database article ID for tracking
 }
 
 export default function SummaryDisplay({
@@ -22,6 +23,7 @@ export default function SummaryDisplay({
   isFirstTime = false,
   textSize = 100,
   onArabicSummaryChange,
+  articleId,
 }: SummaryDisplayProps) {
   const [copySuccess, setCopySuccess] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -32,6 +34,19 @@ export default function SummaryDisplay({
       await navigator.clipboard.writeText(arabicSummary);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 1000);
+
+      // Track copy in database
+      if (articleId) {
+        try {
+          await fetch('/api/update-article', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: articleId, action: 'copied' }),
+          });
+        } catch (error) {
+          console.error('Failed to track copy:', error);
+        }
+      }
     } catch (error) {
       console.error('Failed to copy:', error);
     }
