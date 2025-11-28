@@ -6,7 +6,7 @@ interface TextSizeControlProps {
 }
 
 export default function TextSizeControl({ textSize, onSizeChange }: TextSizeControlProps) {
-  const MIN_SIZE = 70;
+  const MIN_SIZE = 50;
   const MAX_SIZE = 150;
   const STEP = 10;
 

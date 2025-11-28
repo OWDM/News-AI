@@ -32,7 +32,7 @@ export default function Home() {
   const [processingComplete, setProcessingComplete] = useState(false);
   const [hasShownHighlighting, setHasShownHighlighting] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [textSize, setTextSize] = useState<number>(100);
+  const [textSize, setTextSize] = useState<number>(70);
 
   // Prevent hydration mismatch by only enabling animations after mount
   useEffect(() => {
@@ -291,13 +291,13 @@ export default function Home() {
       {/* Header with Input */}
       <section id="home" className="min-h-screen flex flex-col justify-center">
         <div className="text-center">
-          <div className="max-w-4xl mx-auto px-8">
-            <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
+            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
               <Link href="/" className="cursor-pointer">
                 <img
                   src="/newsai-logo.png"
                   alt="News AI Logo"
-                  className="w-16 h-16 md:w-20 md:h-20 object-contain animate-logo-entrance"
+                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain animate-logo-entrance"
                 />
               </Link>
               <Link href="/" className="cursor-pointer">
@@ -307,20 +307,20 @@ export default function Home() {
                     by="character"
                     once
                     as="h1"
-                    className="text-5xl md:text-6xl tracking-tight navbar-brand"
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight navbar-brand"
                     style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}
                   >
                     News AI
                   </TextAnimate>
                 ) : (
-                  <h1 className="text-5xl md:text-6xl tracking-tight navbar-brand opacity-0" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight navbar-brand opacity-0" style={{ color: 'var(--foreground)', fontFamily: 'Bungee, sans-serif' }}>
                     News AI
                   </h1>
                 )}
               </Link>
             </div>
             {mounted && (
-              <p className="text-lg md:text-xl leading-relaxed mb-12" style={{ color: 'var(--navbar-white-icon)' }}>
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 md:mb-12" style={{ color: 'var(--navbar-white-icon)' }}>
                 <TextAnimate
                   animation="fadeIn"
                   by="word"
@@ -350,9 +350,9 @@ export default function Home() {
       {/* Main Content */}
       <section
         id="generator"
-        className={`pt-24 md:pt-32 ${state.isProcessing ? 'min-h-screen flex items-center' : ''}`}
+        className={`pt-16 sm:pt-20 md:pt-32 ${state.isProcessing ? 'min-h-screen flex items-center' : ''}`}
       >
-        <main className="px-8 py-8 w-full">
+        <main className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8 w-full">
 
         {/* Processing Progress */}
         {state.isProcessing && (
@@ -485,23 +485,12 @@ export default function Home() {
               />
             </div>
 
-            {/* Two Column Layout: Article (left) + English Summary (right sticky) */}
+            {/* Two Column Layout: English Summary (first on mobile, right on desktop) + Article (second on mobile, left on desktop) */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fadeInUp animate-delay-200">
-              {/* Left Column - Original Article (scrollable) */}
-              <div>
-                <ArticleDisplay
-                  article={state.article}
-                  matches={state.matchedSentences}
-                  showHighlighting={showHighlighting}
-                  isFirstTime={!hasShownHighlighting && showHighlighting}
-                  textSize={textSize}
-                />
-              </div>
-
-              {/* Right Column - English Summary (sticky, shown inline by SummaryDisplay component) */}
-              <div className="lg:block hidden">
-                <div className="p-8 rounded-2xl shadow-lg sticky top-4 smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider mb-6 pb-4" style={{
+              {/* English Summary - First on mobile, Right column on desktop (sticky) */}
+              <div className="lg:order-2">
+                <div className="p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg lg:sticky lg:top-4 smooth-transition" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
+                  <h2 className="text-[8px] sm:text-xs font-semibold uppercase tracking-wider mb-4 sm:mb-6 pb-3 sm:pb-4" style={{
                     color: 'var(--navbar-white-icon)',
                     opacity: 0.7,
                     borderBottom: '2px solid var(--border-color)'
@@ -615,6 +604,17 @@ export default function Home() {
                     })()}
                   </div>
                 </div>
+              </div>
+
+              {/* Original Article - Second on mobile, Left column on desktop (scrollable) */}
+              <div className="lg:order-1">
+                <ArticleDisplay
+                  article={state.article}
+                  matches={state.matchedSentences}
+                  showHighlighting={showHighlighting}
+                  isFirstTime={!hasShownHighlighting && showHighlighting}
+                  textSize={textSize}
+                />
               </div>
             </div>
           </>
