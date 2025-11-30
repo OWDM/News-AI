@@ -79,3 +79,34 @@ export async function getCopyRate(): Promise<{ total: number; copied: number; ra
 
   return { total, copied, rate };
 }
+
+/**
+ * Contact Message Interface
+ */
+export interface Contact {
+  id: number;
+  name: string;
+  email: string;
+  message: string;
+  read: boolean;
+  created_at: Date;
+}
+
+export interface NewContact {
+  name: string;
+  email: string;
+  message: string;
+}
+
+/**
+ * Save a new contact message to the database
+ */
+export async function saveContact(contact: NewContact): Promise<Contact> {
+  const result = await sql<Contact>`
+    INSERT INTO contacts (name, email, message)
+    VALUES (${contact.name}, ${contact.email}, ${contact.message})
+    RETURNING *
+  `;
+
+  return result.rows[0];
+}
