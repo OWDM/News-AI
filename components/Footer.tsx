@@ -29,7 +29,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 md:gap-4">
               {/* LinkedIn */}
               <a
-                href="https://linkedin.com/in/yourprofile"
+                href="https://www.linkedin.com/in/musaedal-bedhani"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition-all duration-300 hover:scale-110"
@@ -42,7 +42,7 @@ export default function Footer() {
 
               {/* GitHub */}
               <a
-                href="https://github.com/yourusername"
+                href="https://github.com/OWDM"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition-all duration-300 hover:scale-110"
