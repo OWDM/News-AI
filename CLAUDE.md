@@ -20,8 +20,11 @@ npm run lint         # Run ESLint
 Required environment variables in `.env.local`:
 - `OPENAI_API_KEY` - For GPT-4o-mini models
 - `EXTRACTOR_API_KEY` - For ExtractorAPI (URL content extraction)
+- `POSTGRES_URL` - Neon database connection string (for articles and contacts storage)
 
 Optional:
+- `RESEND_API_KEY` - For email notifications from contact form (see EMAIL_SETUP.md)
+- `NOTIFICATION_EMAIL` - Your email to receive contact form submissions
 - `PINECONE_API_KEY`, `PINECONE_ENVIRONMENT`, `PINECONE_INDEX` - If upgrading from MemoryVectorStore
 
 ## Architecture
@@ -84,8 +87,15 @@ The main application (`app/page.tsx`) orchestrates a 5-step pipeline:
   - Smooth transition animations
   - Default state: OFF
 - `Navbar.tsx` - Animated navbar with scroll-responsive width and active section indicators
-- `Contact.tsx` - Contact form with dark theme autofill styling
+- `Contact.tsx` - Functional contact form with database storage and email notifications
+  - Form validation (name, email, message)
+  - Loading state with spinner
+  - Success/error feedback messages
+  - Database persistence via `/api/contact`
+  - Email notifications via Resend (optional, requires setup)
+  - Auto-reset on successful submission
 - `Footer.tsx` - Minimalist footer with logo and branding
+- `FooterCounter.tsx` / `ArticleCounter.tsx` - Animated counter showing total articles generated
 
 Highlighting works by matching summary sentences to article sentences via LLM-based alignment.
 
@@ -200,6 +210,53 @@ If migrating to Pinecone:
 2. Add Pinecone env vars
 3. Consider session-based namespaces to avoid cross-request contamination
 4. Update all imports from `createVectorstore` to `createVectorstoreWithPinecone`
+
+## Database (Neon Postgres)
+
+The application uses Neon Postgres via `@vercel/postgres` for data persistence.
+
+### Database Schema (`lib/db/schema.sql`)
+
+**Articles Table:**
+- Stores generated summaries for analytics
+- Fields: `id`, `original_article`, `english_summary`, `arabic_summary`, `copied`, `discarded`, `created_at`
+- Used for article counter in footer
+- Tracks user engagement (copied/discarded flags)
+
+**Contacts Table:**
+- Stores contact form submissions
+- Fields: `id`, `name`, `email`, `message`, `read`, `created_at`
+- Allows reviewing messages even if email fails
+
+### Database Functions (`lib/db/client.ts`)
+
+**Articles:**
+- `saveArticle()` - Save completed summary
+- `getArticleCount()` - Get total articles for counter
+- `markArticleAsCopied()` / `markArticleAsDiscarded()` - Track user actions
+
+**Contacts:**
+- `saveContact()` - Save contact form submission
+
+### Setup
+Run the schema in your Neon dashboard or use the migration script:
+```bash
+POSTGRES_URL="your_connection_string" node scripts/create-contacts-table.js
+```
+
+## Email Notifications
+
+Contact form submissions trigger email notifications via Resend (optional).
+
+### Features
+- Email sent to `NOTIFICATION_EMAIL` on form submission
+- Reply-to set to sender's email for direct responses
+- HTML + plain text versions
+- Branded email template (`lib/email/contact-notification.tsx`)
+- Graceful degradation - form works even if email fails
+
+### Setup
+See `EMAIL_SETUP.md` for detailed Resend configuration instructions.
 
 ## Deployment 
 
