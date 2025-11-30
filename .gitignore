@@ -17,6 +17,9 @@
 .DS_Store
 *.pem
 
+# Claude Code configuration
+CLAUDE.md
+
 # Debug
 npm-debug.log*
 yarn-debug.log*
